@@ -113,7 +113,7 @@ const Q = {},
 			const e = document.querySelector("meta[property=csp-nonce]"),
 				a = (null == e ? void 0 : e.nonce) || (null == e ? void 0 : e.getAttribute("nonce"));
 			n = t.map(e => {
-				if ((e = "/nqsfke/gm/w/" + e) in Q) return;
+				if ((e = "nqsfke/gm/w/" + e) in Q) return;
 				Q[e] = !0;
 				const t = e.endsWith(".css"),
 					o = t ? '[rel="stylesheet"]' : "";

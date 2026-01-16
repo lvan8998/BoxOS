@@ -1,0 +1,1 @@
+import{d as e}from"./chunk-DWTGLlOg.js";import{r as o,A as a,i as n}from"./ht-DIEl3wcJ.js";const t=e("Feedback",()=>({reqFeedback:async function(e,t,r=""){const s=await o(a.feedback,{problemType:e,content:t,videoId:r,phoneModel:window.navigator.userAgent});return n(s.code)}}));export{t as u};

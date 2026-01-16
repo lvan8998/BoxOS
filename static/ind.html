@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+    <script>
+    var __xyz_cid_ = 16;
+    var __xyz_sn_ = 'OA';
+    </script>
+    <meta charset="UTF-8"/>
+    <link rel="icon" type="image/svg+xml" href="/nqsfke/gm/w/icon.png"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+
+    <title></title>
+    <style>
+  /* 隐藏网页核心内容，验证通过后显示 */
+        /* 登录框水平垂直居中核心样式 */
+        boy {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f5f5f5;
+        }
+
+        /* 隐藏网页核心内容，验证通过后显示 */
+        #app {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            border-radius: 8px;
+        }
+
+        /* 登录框样式优化 */
+        #login-box1 {
+            padding: 30px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            max-width: 300px;
+            width: 100%;
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .error-tip {
+            color: red;
+            margin-top: 10px;
+            display: none;
+            font-size: 14px;
+        }
+
+        #password-input1s {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .login-container {
+    /* 使用 Flexbox 布局 */
+    display: flex;
+    justify-content: center; /* 水平居中 */
+    align-items: center;     /* 垂直居中 */
+    
+    /* 占据全屏高度和宽度 */
+    width: 100vw;
+    height: 100vh;
+    
+    /* 背景颜色（可选，灰色背景突出登录框） */
+    background-color: #f0f2f5;
+    
+    /* 确保没有默认边距 */
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* 登录卡片样式 */
+.login-card {
+    /* 白色背景 */
+    background: white;
+    
+    /* 添加阴影效果 */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    
+    /* 圆角 */
+    border-radius: 8px;
+    
+    /* 内边距 */
+    padding: 30px;
+    
+    /* 设置最大宽度，以便在大屏幕上看起来不会太宽 */
+    max-width: 400px;
+    
+    /* 宽度占满容器（在小屏幕上会自动适应） */
+    width: 100%;
+    
+    box-sizing: border-box;
+}
+
+/* 输入框通用样式 */
+.login-input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.li120px{
+
+    width: 220px;
+
+
+}
+
+/* 按钮样式 */
+.login-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #1890ff; /* 蓝色主题 */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+}
+
+.login-btn:hover {
+    background-color: #40a9ff;
+}
+
+/* 响应式优化：针对非常小的手机屏幕 */
+@media (max-width: 480px) {
+    .login-card {
+        padding: 20px; /* 减小内边距 */
+        margin: 10px;  /* 添加边距防止贴边 */
+    }
+    
+    .login-input, .login-btn {
+        font-size: 14px; /* 字体稍微调小 */
+    }
+}
+    </style>
+  <script src="https://cdn.staticfile.org/crypto-js/4.2.0/crypto-js.min.js"></script>
+   <script src="/nqsfke/gm/w/assets/VerifyCode.js"></script>
+     <script src="/main.js"></script>
+<script>
+ /************************ 核心配置 ************************/
+ 
+    </script>
+  
+  <script type="module">import.meta.url;import("_").catch(()=>1);(async function*(){})().next();window.__vite_is_modern_browser=true</script>
+  <script type="module">!function(){if(window.__vite_is_modern_browser)return;console.warn("vite: loading legacy chunks, syntax error above and the same error below should be ignored");var e=document.getElementById("vite-legacy-polyfill"),n=document.createElement("script");n.src=e.src,n.onload=function(){System.import(document.getElementById('vite-legacy-entry').getAttribute('data-src'))},document.body.appendChild(n)}();</script>
+</head>
+<body>
+ <div id="login-box1" style="display: none;text-align: center; margin-top: 0;">
+        <h3 style="text-align: center; margin-top: 0;">请输入访问密码</h3>
+        <input type="password" id="password-input1" placeholder="请输入密码">
+        <button onclick="verifyPassword()">登录验证</button>
+        <div class="error-tip1" id="error-tip1">密码错误，请重新输入！</div>
+    </div>
+
+  <div class="login-container"  id="login-box">
+        <div class="login-card">
+            <h2 style="text-align: center; margin-bottom: 20px;">用户登录</h2>
+            
+            <input type="text" class="login-input" placeholder="用户名" />
+            <input type="password"  id="password-input" class="login-input" placeholder="密码" />
+
+
+        <!-- 输入框和验证按钮 -->
+        <input type="text" id="inputCode"  class="login-input li120px" placeholder="输入验证码"> <canvas id="verifyCanvas" width="120" height="40" style="margin-top: 10px;padding-top:1px;float: right;"></canvas>
+        
+            
+            <button class="login-btn"  id="checkBtn" onclick="verifyPassword()">登录</button>
+            <div class="error-tip" id="error-tip">密码错误，请重新输入！</div>
+        </div>
+    </div>
+<div id="txt"></div>
+<div id="app"></div>
+  <script nomodule>!function(){var e=document,t=e.createElement("script");if(!("noModule"in t)&&"onbeforeload"in t){var n=!1;e.addEventListener("beforeload",(function(e){if(e.target===t)n=!0;else if(!e.target.hasAttribute("nomodule")||!n)return;e.preventDefault()}),!0),t.type="module",t.src=".",e.head.appendChild(t),t.remove()}}();</script>
+  <script nomodule crossorigin id="vite-legacy-polyfill" src="/nqsfke/gm/w/assets/ht-legacy-DBzl-kMq.js"></script>
+  <script nomodule crossorigin id="vite-legacy-entry" data-src="/nqsfke/gm/w/assets/ht-legacy-BKw8sw1Y.js">System.import(document.getElementById('vite-legacy-entry').getAttribute('data-src'))</script>
+</body>
+</html>

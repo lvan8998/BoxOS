@@ -199,7 +199,7 @@ class te {
 const ae = {
 		appConfig: X.hostDev +"/ht/users/appConfig",
 		initH51: X.hostDev +"/ht/users/initH5_1",
-		initH52: "/ht/users/initH5_2",
+		initH52: X.hostDev +"/ht/users/initH5_2",
 		homeH5: X.hostDev +"/ht/content/homeH5",
 		detail: X.hostDev +"/ht/content/detail",
 		guessContent: X.hostDev +"/ht/content/guessContent",

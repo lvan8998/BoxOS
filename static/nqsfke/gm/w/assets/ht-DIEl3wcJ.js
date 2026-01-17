@@ -981,7 +981,7 @@ const Ae = "arttmpl",
 	}],
 	Pe = V({
   // 将 ne() 改为 createWebHashHistory()
-  history: createWebHashHistory(), // 替换原来的 ne()
+  history: createWebHashHistory('/BoxOS/static/'), // 替换原来的 ne()
   routes: Me,
   scrollBehavior: (e, t, a) => a || {
     top: 0

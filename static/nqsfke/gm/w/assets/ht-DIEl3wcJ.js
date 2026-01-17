@@ -734,14 +734,14 @@ const Ae = "arttmpl",
 		},
 		component: () => $(() => import("./chunk-nKNq4phu.js"), __vite__mapDeps([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]))
 	}, {
-		path: "/index2.html",
+		path: "/BoxOS/static/",
 		name: "Home2",
 		meta: {
 			title: "首页"
 		},
 		component: () => $(() => import("./chunk-nKNq4phu.js"), __vite__mapDeps([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]))
 	},{
-		path: "/#/type/:category/:subCategory?",
+		path: "/BoxOS/static/#/type/:category/:subCategory?",
 		name: "TypePage",
 		meta: {
 			title: "分类"
@@ -749,7 +749,7 @@ const Ae = "arttmpl",
 		component: () => $(() => import("./chunk-B4lq4qLD.js"), __vite__mapDeps([22, 23, 5, 3, 24, 12, 13, 14, 25, 4, 1, 2, 26, 27, 6, 7, 8, 9, 10, 11, 15, 16, 17, 18, 19, 28, 21])),
 		props: !0
 	}, {
-		path: "/detail/:id",
+		path: "/BoxOS/static/#/detail/:id",
 		name: "DetailPage",
 		meta: {
 			title: "详情"

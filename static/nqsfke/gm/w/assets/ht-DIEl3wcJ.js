@@ -2395,9 +2395,12 @@ const Bt = {
 	Yt = R();
 Xt.use(G), Xt.use(N), Xt.use(K), Xt.use(Yt).use(Pe).mount("#app");
 function createWebHashHistory(base = '') {
-  // 规范化 base，确保以 / 结尾
-  base = base.replace(/^\w+:\/\/[^\/]+/, '') || '/';
-  if (!base.endsWith('/')) base += '/';
+  // 规范化 base
+  base = base || '/';
+  
+  // 确保 base 以 / 开头，不以 / 结尾（除非是根路径）
+  if (!base.startsWith('/')) base = '/' + base;
+  if (base !== '/' && base.endsWith('/')) base = base.slice(0, -1);
   
   const { history, location } = window;
   
@@ -2405,10 +2408,22 @@ function createWebHashHistory(base = '') {
   function getCurrentLocation() {
     const hash = location.hash.slice(1);
     if (!hash) return '/';
+    return hash;
+  }
+  
+  // 获取完整的 base 路径（包括协议、域名和目录）
+  function getFullBase() {
+    const { protocol, host, pathname } = location;
+    const fullPath = pathname;
     
-    // 移除 base 部分（如果 hash 以 base 开头）
-    const path = hash.startsWith(base) ? hash.slice(base.length) : hash;
-    return path || '/';
+    // 如果传入的 base 与当前路径匹配，使用当前路径
+    if (base && fullPath.endsWith(base)) {
+      return fullPath;
+    }
+    
+    // 否则构建包含 base 的完整路径
+    const fullBase = fullPath.substring(0, fullPath.lastIndexOf('/') + 1) + (base === '/' ? '' : base.replace(/^\//, ''));
+    return fullBase;
   }
   
   const locationRef = {
@@ -2423,10 +2438,11 @@ function createWebHashHistory(base = '') {
   function updateHash(path, replace = false) {
     // 确保路径以 / 开头
     const normalizedPath = path.startsWith('/') ? path : '/' + path;
-    // 构建完整的 hash（包含 base）
-    const fullHash = base + normalizedPath.replace(/^\//, '');
+    // 只将路径部分作为 hash
+    const hash = normalizedPath;
     
-    const url = location.pathname + location.search + '#' + fullHash;
+    const fullBase = getFullBase();
+    const url = fullBase + location.search + '#' + hash;
     
     try {
       history[replace ? 'replaceState' : 'pushState'](stateRef.value, '', url);
@@ -2437,7 +2453,10 @@ function createWebHashHistory(base = '') {
   
   // 如果 state 不存在，初始化
   if (!stateRef.value) {
-    updateHash(locationRef.value, true);
+    const currentPath = getCurrentLocation();
+    if (currentPath === '/') {
+      updateHash('/', true);
+    }
     stateRef.value = {
       back: null,
       current: locationRef.value,
@@ -2449,26 +2468,32 @@ function createWebHashHistory(base = '') {
   }
   
   // 监听 hashchange 事件
-  let listenerCallback = null;
+  const listeners = [];
   
   const listenerManager = {
-    pauseListeners: () => {},
+    pauseListeners: () => {
+      // 可以添加暂停逻辑
+    },
     listen: (callback) => {
-      listenerCallback = callback;
       const handleHashChange = () => {
         locationRef.value = getCurrentLocation();
-        if (listenerCallback) listenerCallback();
+        callback();
       };
       
       window.addEventListener('hashchange', handleHashChange);
+      listeners.push({ callback, handleHashChange });
       
       return () => {
         window.removeEventListener('hashchange', handleHashChange);
-        listenerCallback = null;
+        const index = listeners.findIndex(item => item.callback === callback);
+        if (index > -1) listeners.splice(index, 1);
       };
     },
     destroy: () => {
-      listenerCallback = null;
+      listeners.forEach(item => {
+        window.removeEventListener('hashchange', item.handleHashChange);
+      });
+      listeners.length = 0;
     }
   };
   
@@ -2489,7 +2514,8 @@ function createWebHashHistory(base = '') {
     locationRef.value = path;
     stateRef.value = {
       ...currentState,
-      position: currentState.position + 1
+      position: currentState.position + 1,
+      ...state
     };
   };
   
@@ -2506,7 +2532,7 @@ function createWebHashHistory(base = '') {
   const routerHistory = {
     location: locationRef,
     state: stateRef,
-    base: base,
+    base: getFullBase(),
     go: function(delta, triggerListeners = true) {
       if (!triggerListeners) {
         listenerManager.pauseListeners();
@@ -2515,7 +2541,7 @@ function createWebHashHistory(base = '') {
     },
     createHref: function(path) {
       const normalizedPath = path.startsWith('/') ? path : '/' + path;
-      return '#' + base + normalizedPath.replace(/^\//, '');
+      return '#' + normalizedPath;
     },
     push: push,
     replace: replace,

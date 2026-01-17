@@ -168,7 +168,7 @@ function Y() {
 
 function ee() {
 	var e;
-	return null != (e = window.__xyz_sn_) ? e : "视频"
+	return null != (e = window.__xyz_sn_) ? e : "OA_SST"
 }
 class te {
 	static aesEncrypt(e, t, a) {
@@ -741,7 +741,7 @@ const Ae = "arttmpl",
 		},
 		component: () => $(() => import("./chunk-nKNq4phu.js"), __vite__mapDeps([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]))
 	},{
-		path: "/type/:category/:subCategory?",
+		path: "#/type/:category/:subCategory?",
 		name: "TypePage",
 		meta: {
 			title: "分类"

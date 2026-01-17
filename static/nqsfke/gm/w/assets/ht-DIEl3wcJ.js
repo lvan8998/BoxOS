@@ -980,12 +980,13 @@ const Ae = "arttmpl",
 		component: () => $(() => import("./chunk-WsJCYEJB.js"), __vite__mapDeps([91, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21]))
 	}],
 	Pe = V({
-		history: O(),
-		routes: Me,
-		scrollBehavior: (e, t, a) => a || {
-			top: 0
-		}
-	});
+  // 将 ne() 改为 createWebHashHistory()
+  history: createWebHashHistory(), // 替换原来的 ne()
+  routes: Me,
+  scrollBehavior: (e, t, a) => a || {
+    top: 0
+  }
+});
 let ze = 0;
 Pe.beforeEach((e, t, a) => {
 	document.title = "".concat(ee());
@@ -2385,6 +2386,109 @@ const Bt = {
 	])),
 	Yt = R();
 Xt.use(G), Xt.use(N), Xt.use(K), Xt.use(Yt).use(Pe).mount("#app");
+function createWebHashHistory(base) {
+  // 确保 base 以 # 开头
+  base = base && base.replace(/^[^#]+/, '') || '#';
+  
+  const { history: h, location: l } = window;
+  const location = {
+    value: normalizeHash(l, base)
+  };
+  const state = { value: h.state };
+  
+  // 获取当前 hash（移除 # 符号）
+  function getCurrentLocation() {
+    const hash = l.hash.slice(1);
+    return hash || '/';
+  }
+  
+  // 更新 hash
+  function updateHash(path, replace) {
+    const hash = path.startsWith('#') ? path : '#' + path;
+    const url = l.pathname + l.search + hash;
+    
+    try {
+      h[replace ? 'replaceState' : 'pushState'](state.value, '', url);
+    } catch (e) {
+      l[replace ? 'replace' : 'assign'](url);
+    }
+  }
+  
+  // 初始化状态
+  if (!state.value) {
+    updateHash(location.value, true);
+    state.value = {
+      back: null,
+      current: location.value,
+      forward: null,
+      position: h.length - 1,
+      replaced: true,
+      scroll: null
+    };
+  }
+  
+  // 监听 hashchange 事件
+  const listeners = [];
+  function setupListeners() {
+    const handleHashChange = () => {
+      location.value = getCurrentLocation();
+      listeners.forEach(fn => fn());
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    
+    return {
+      listen: (fn) => {
+        listeners.push(fn);
+        return () => {
+          const index = listeners.indexOf(fn);
+          if (index > -1) listeners.splice(index, 1);
+        };
+      },
+      destroy: () => {
+        window.removeEventListener('hashchange', handleHashChange);
+        listeners.length = 0;
+      }
+    };
+  }
+  
+  const listenerManager = setupListeners();
+  
+  return {
+    location,
+    state,
+    base,
+    createHref: (to) => base + (to === '/' ? '' : to),
+    push: (to, data) => {
+      const currentState = { ...state.value, ...h.state, forward: to, scroll: null };
+      updateHash(state.value.current, true);
+      updateHash(to, false);
+      location.value = to;
+      state.value = { ...currentState, position: currentState.position + 1 };
+    },
+    replace: (to, data) => {
+      updateHash(to, true);
+      location.value = to;
+      state.value = { ...h.state, ...data, position: state.value.position };
+    },
+    go: (delta, shouldTriggerListeners = true) => {
+      if (!shouldTriggerListeners) {
+        // 暂时暂停监听器
+      }
+      h.go(delta);
+    },
+    listen: listenerManager.listen,
+    destroy: listenerManager.destroy
+  };
+}
+
+// 辅助函数：标准化 hash
+function normalizeHash(location, base) {
+  let hash = location.hash.slice(1);
+  if (!hash && base && base !== '#') {
+    hash = base.slice(1);
+  }
+  return hash || '/';
+}
 export {
 	ae as A, Ue as C, pt as L, At as M, Ye as N, ce as S, wt as T, Et as _, a as __vite_legacy_guard, Re as a, Se as b, ne as c, $ as d, ct as e, re as f, se as g, Rt as h, xe as i, Y as j, te as k, ue as l, de as m, It as n, ft as o, Pe as p, Ce as r, le as s, Qe as u
 };

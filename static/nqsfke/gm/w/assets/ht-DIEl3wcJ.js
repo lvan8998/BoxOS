@@ -2386,108 +2386,147 @@ const Bt = {
 	])),
 	Yt = R();
 Xt.use(G), Xt.use(N), Xt.use(K), Xt.use(Yt).use(Pe).mount("#app");
-function createWebHashHistory(base) {
-  // 确保 base 以 # 开头
-  base = base && base.replace(/^[^#]+/, '') || '#';
+function createWebHashHistory(base = '') {
+  // 规范化 base，确保以 / 结尾
+  base = base.replace(/^\w+:\/\/[^\/]+/, '') || '/';
+  if (!base.endsWith('/')) base += '/';
   
-  const { history: h, location: l } = window;
-  const location = {
-    value: normalizeHash(l, base)
-  };
-  const state = { value: h.state };
+  const { history, location } = window;
   
-  // 获取当前 hash（移除 # 符号）
+  // 获取当前 hash 路径（移除 #）
   function getCurrentLocation() {
-    const hash = l.hash.slice(1);
-    return hash || '/';
+    const hash = location.hash.slice(1);
+    if (!hash) return '/';
+    
+    // 移除 base 部分（如果 hash 以 base 开头）
+    const path = hash.startsWith(base) ? hash.slice(base.length) : hash;
+    return path || '/';
   }
   
-  // 更新 hash
-  function updateHash(path, replace) {
-    const hash = path.startsWith('#') ? path : '#' + path;
-    const url = l.pathname + l.search + hash;
+  const locationRef = {
+    value: getCurrentLocation()
+  };
+  
+  const stateRef = {
+    value: history.state
+  };
+  
+  // 更新 URL 的 hash 部分
+  function updateHash(path, replace = false) {
+    // 确保路径以 / 开头
+    const normalizedPath = path.startsWith('/') ? path : '/' + path;
+    // 构建完整的 hash（包含 base）
+    const fullHash = base + normalizedPath.replace(/^\//, '');
+    
+    const url = location.pathname + location.search + '#' + fullHash;
     
     try {
-      h[replace ? 'replaceState' : 'pushState'](state.value, '', url);
+      history[replace ? 'replaceState' : 'pushState'](stateRef.value, '', url);
     } catch (e) {
-      l[replace ? 'replace' : 'assign'](url);
+      location[replace ? 'replace' : 'assign'](url);
     }
   }
   
-  // 初始化状态
-  if (!state.value) {
-    updateHash(location.value, true);
-    state.value = {
+  // 如果 state 不存在，初始化
+  if (!stateRef.value) {
+    updateHash(locationRef.value, true);
+    stateRef.value = {
       back: null,
-      current: location.value,
+      current: locationRef.value,
       forward: null,
-      position: h.length - 1,
+      position: history.length - 1,
       replaced: true,
       scroll: null
     };
   }
   
   // 监听 hashchange 事件
-  const listeners = [];
-  function setupListeners() {
-    const handleHashChange = () => {
-      location.value = getCurrentLocation();
-      listeners.forEach(fn => fn());
-    };
-    window.addEventListener('hashchange', handleHashChange);
-    
-    return {
-      listen: (fn) => {
-        listeners.push(fn);
-        return () => {
-          const index = listeners.indexOf(fn);
-          if (index > -1) listeners.splice(index, 1);
-        };
-      },
-      destroy: () => {
+  let listenerCallback = null;
+  
+  const listenerManager = {
+    pauseListeners: () => {},
+    listen: (callback) => {
+      listenerCallback = callback;
+      const handleHashChange = () => {
+        locationRef.value = getCurrentLocation();
+        if (listenerCallback) listenerCallback();
+      };
+      
+      window.addEventListener('hashchange', handleHashChange);
+      
+      return () => {
         window.removeEventListener('hashchange', handleHashChange);
-        listeners.length = 0;
-      }
+        listenerCallback = null;
+      };
+    },
+    destroy: () => {
+      listenerCallback = null;
+    }
+  };
+  
+  const push = function(path, state) {
+    const currentState = {
+      ...stateRef.value,
+      ...history.state,
+      forward: path,
+      scroll: null
     };
-  }
+    
+    // 先保存当前状态
+    updateHash(stateRef.value.current, true);
+    
+    // 然后 push 新路径
+    updateHash(path, false);
+    
+    locationRef.value = path;
+    stateRef.value = {
+      ...currentState,
+      position: currentState.position + 1
+    };
+  };
   
-  const listenerManager = setupListeners();
+  const replace = function(path, state) {
+    updateHash(path, true);
+    locationRef.value = path;
+    stateRef.value = {
+      ...history.state,
+      ...state,
+      position: stateRef.value.position
+    };
+  };
   
-  return {
-    location,
-    state,
-    base,
-    createHref: (to) => base + (to === '/' ? '' : to),
-    push: (to, data) => {
-      const currentState = { ...state.value, ...h.state, forward: to, scroll: null };
-      updateHash(state.value.current, true);
-      updateHash(to, false);
-      location.value = to;
-      state.value = { ...currentState, position: currentState.position + 1 };
-    },
-    replace: (to, data) => {
-      updateHash(to, true);
-      location.value = to;
-      state.value = { ...h.state, ...data, position: state.value.position };
-    },
-    go: (delta, shouldTriggerListeners = true) => {
-      if (!shouldTriggerListeners) {
-        // 暂时暂停监听器
+  const routerHistory = {
+    location: locationRef,
+    state: stateRef,
+    base: base,
+    go: function(delta, triggerListeners = true) {
+      if (!triggerListeners) {
+        listenerManager.pauseListeners();
       }
-      h.go(delta);
+      history.go(delta);
     },
+    createHref: function(path) {
+      const normalizedPath = path.startsWith('/') ? path : '/' + path;
+      return '#' + base + normalizedPath.replace(/^\//, '');
+    },
+    push: push,
+    replace: replace,
     listen: listenerManager.listen,
     destroy: listenerManager.destroy
   };
-}
-
-// 辅助函数：标准化 hash
-function normalizeHash(location, base) {
-  let hash = location.hash.slice(1);
-  if (!hash && base && base !== '#') {
-    hash = base.slice(1);
-  }
-  return hash || '/';
+  
+  // 为 location 和 state 添加 getter
+  Object.defineProperty(routerHistory, 'location', {
+    enumerable: true,
+    get: () => locationRef.value
+  });
+  
+  Object.defineProperty(routerHistory, 'state', {
+    enumerable: true,
+    get: () => stateRef.value
+  });
+  
+  return routerHistory;
 }
 export {
 	ae as A, Ue as C, pt as L, At as M, Ye as N, ce as S, wt as T, Et as _, a as __vite_legacy_guard, Re as a, Se as b, ne as c, $ as d, ct as e, re as f, se as g, Rt as h, xe as i, Y as j, te as k, ue as l, de as m, It as n, ft as o, Pe as p, Ce as r, le as s, Qe as u

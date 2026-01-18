@@ -987,13 +987,10 @@ const Ae = "arttmpl",
 		},
 		component: () => $(() => import("./chunk-WsJCYEJB.js"), __vite__mapDeps([91, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21]))
 	}],
-	Pe = V({
-  // 将 ne() 改为 createWebHashHistory()
-  history: createWebHashHistory(), // 替换原来的 ne()
-  routes: Me,
-  scrollBehavior: (e, t, a) => a || {
-    top: 0
-  }
+	const Pe = V({
+    history: createCustomHashHistory('/BoxOS/static/'),
+    routes: Me,
+    scrollBehavior: (e, t, a) => a || { top: 0 }
 });
 let ze = 0;
 Pe.beforeEach((e, t, a) => {
@@ -2394,130 +2391,32 @@ const Bt = {
 	])),
 	Yt = R();
 Xt.use(G), Xt.use(N), Xt.use(K), Xt.use(Yt).use(Pe).mount("#app");
-function createWebHashHistory() {
-  const { history, location } = window;
-  
-  // 获取当前 hash 路径（移除 #）
-  function getCurrentLocation() {
-    const hash = location.hash.slice(1);
-    return hash || '/';
-  }
-  
-  const locationRef = {
-    value: getCurrentLocation()
-  };
-  
-  const stateRef = {
-    value: history.state
-  };
-  
-  // 更新 URL 的 hash 部分
-  function updateHash(path, replace = false) {
-    // 确保路径以 / 开头
-    const normalizedPath = path.startsWith('/') ? path : '/' + path;
-    
-    // 只修改 hash 部分，保持其他部分不变
-    const url = location.pathname + location.search + '#' + normalizedPath;
-    
-    try {
-      history[replace ? 'replaceState' : 'pushState'](stateRef.value, '', url);
-    } catch (e) {
-      location[replace ? 'replace' : 'assign'](url);
-    }
-  }
-  
-  // 如果 state 不存在，初始化
-  if (!stateRef.value) {
-    const currentHash = getCurrentLocation();
-    if (currentHash === '/') {
-      // 如果当前没有 hash，设置为 /
-      updateHash('/', true);
-    }
-    stateRef.value = {
-      back: null,
-      current: locationRef.value,
-      forward: null,
-      position: history.length - 1,
-      replaced: true,
-      scroll: null
+// 自定义 hash history
+function createCustomHashHistory(base = '') {
+    return {
+        location: {
+            value: window.location.hash.replace('#', '') || '/'
+        },
+        push(to) {
+            window.location.hash = to;
+        },
+        replace(to) {
+            const url = window.location.href.split('#')[0] + '#' + to;
+            window.history.replaceState({}, '', url);
+        },
+        listen(callback) {
+            const handler = () => callback();
+            window.addEventListener('hashchange', handler);
+            return () => window.removeEventListener('hashchange', handler);
+        },
+        createHref(to) {
+            return '#' + to;
+        }
     };
-  }
-  
-  // 监听 hashchange 事件
-  const listeners = [];
-  
-  const listenerManager = {
-    pauseListeners: () => {
-      // 可以添加暂停逻辑
-    },
-    listen: (callback) => {
-      const handleHashChange = () => {
-        locationRef.value = getCurrentLocation();
-        callback();
-      };
-      
-      window.addEventListener('hashchange', handleHashChange);
-      listeners.push(handleHashChange);
-      
-      return () => {
-        window.removeEventListener('hashchange', handleHashChange);
-        const index = listeners.indexOf(handleHashChange);
-        if (index > -1) listeners.splice(index, 1);
-      };
-    },
-    destroy: () => {
-      listeners.forEach(handler => {
-        window.removeEventListener('hashchange', handler);
-      });
-      listeners.length = 0;
-    }
-  };
-  
-  const routerHistory = {
-    location: locationRef,
-    state: stateRef,
-    base: location.pathname,
-    go: function(delta) {
-      history.go(delta);
-    },
-    createHref: function(path) {
-      const normalizedPath = path.startsWith('/') ? path : '/' + path;
-      return '#' + normalizedPath;
-    },
-    push: function(path, state) {
-      updateHash(path, false);
-      locationRef.value = path;
-      stateRef.value = {
-        ...stateRef.value,
-        ...state,
-        position: stateRef.value.position + 1
-      };
-    },
-    replace: function(path, state) {
-      updateHash(path, true);
-      locationRef.value = path;
-      stateRef.value = {
-        ...stateRef.value,
-        ...state,
-        position: stateRef.value.position
-      };
-    },
-    listen: listenerManager.listen,
-    destroy: listenerManager.destroy
-  };
-  
-  Object.defineProperty(routerHistory, 'location', {
-    enumerable: true,
-    get: () => locationRef.value
-  });
-  
-  Object.defineProperty(routerHistory, 'state', {
-    enumerable: true,
-    get: () => stateRef.value
-  });
-  
-  return routerHistory;
 }
+
+// 使用自定义的 hash history
+
 export {
 	ae as A, Ue as C, pt as L, At as M, Ye as N, ce as S, wt as T, Et as _, a as __vite_legacy_guard, Re as a, Se as b, ne as c, $ as d, ct as e, re as f, se as g, Rt as h, xe as i, Y as j, te as k, ue as l, de as m, It as n, ft as o, Pe as p, Ce as r, le as s, Qe as u
 };

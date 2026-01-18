@@ -2391,28 +2391,152 @@ const Bt = {
 	])),
 	Yt = R();
 Xt.use(G), Xt.use(N), Xt.use(K), Xt.use(Yt).use(Pe).mount("#app");
-// 自定义 hash history
-function createCustomHashHistory(base = '') {
-    return {
-        location: {
-            value: window.location.hash.replace('#', '') || '/'
-        },
-        push(to) {
-            window.location.hash = to;
-        },
-        replace(to) {
-            const url = window.location.href.split('#')[0] + '#' + to;
-            window.history.replaceState({}, '', url);
-        },
-        listen(callback) {
-            const handler = () => callback();
-            window.addEventListener('hashchange', handler);
-            return () => window.removeEventListener('hashchange', handler);
-        },
-        createHref(to) {
-            return '#' + to;
-        }
+function createWebHashHistory(base) {
+  // 确保 base 正确格式
+  base = (base || '').replace(/^\w+:\/\/[^\/]+/, '');
+  if (!base.startsWith('/')) base = '/' + base;
+  
+  const { history: h, location: l } = window;
+  
+  // 获取当前 hash 路由
+  function getCurrentLocation() {
+    const hash = l.hash.slice(1);
+    // 如果 hash 为空，返回根路径
+    if (!hash || hash === '') return '/';
+    // 确保 hash 以 / 开头
+    return hash.startsWith('/') ? hash : '/' + hash;
+  }
+  
+  // 构建完整 URL（包含 base 和 hash）
+  function createFullUrl(path) {
+    // 移除可能的开头 #
+    const hashPath = path.startsWith('#') ? path.slice(1) : path;
+    // 确保 hash 路径以 / 开头
+    const normalizedHash = hashPath.startsWith('/') ? hashPath : '/' + hashPath;
+    // 构建完整 URL
+    return l.protocol + '//' + l.host + base + '#' + normalizedHash;
+  }
+  
+  const location = {
+    value: getCurrentLocation()
+  };
+  
+  const state = { value: h.state };
+  
+  // 初始化状态（如果没有）
+  if (!state.value) {
+    const currentHash = getCurrentLocation();
+    state.value = {
+      back: null,
+      current: currentHash,
+      forward: null,
+      position: h.length - 1,
+      replaced: true,
+      scroll: null
     };
+  }
+  
+  // 监听 hashchange 事件
+  const listeners = [];
+  let listening = false;
+  
+  function setupListeners() {
+    if (listening) return;
+    
+    const handleHashChange = () => {
+      location.value = getCurrentLocation();
+      
+      // 更新状态
+      const newState = {
+        ...state.value,
+        current: location.value,
+        position: (state.value.position || 0) + 1
+      };
+      state.value = newState;
+      
+      // 触发监听器
+      listeners.forEach(fn => fn());
+    };
+    
+    window.addEventListener('hashchange', handleHashChange);
+    listening = true;
+    
+    return {
+      listen: (fn) => {
+        listeners.push(fn);
+        return () => {
+          const index = listeners.indexOf(fn);
+          if (index > -1) listeners.splice(index, 1);
+        };
+      },
+      destroy: () => {
+        window.removeEventListener('hashchange', handleHashChange);
+        listeners.length = 0;
+        listening = false;
+      }
+    };
+  }
+  
+  const listenerManager = setupListeners();
+  
+  return {
+    location,
+    state,
+    base,
+    createHref: (to) => {
+      // 创建 href，考虑多层目录
+      const hash = to.startsWith('/') ? to : '/' + to;
+      return base + '#' + (hash === '/' ? '' : hash);
+    },
+    push: (to, data) => {
+      const currentState = { 
+        ...state.value, 
+        ...h.state, 
+        forward: to, 
+        scroll: null 
+      };
+      
+      // 更新 hash
+      window.location.hash = to;
+      
+      location.value = to;
+      state.value = { 
+        ...currentState, 
+        position: currentState.position + 1,
+        ...data 
+      };
+      
+      // 手动触发一次监听
+      setTimeout(() => {
+        listeners.forEach(fn => fn());
+      }, 0);
+    },
+    replace: (to, data) => {
+      // 使用 replaceState 更新 URL 而不创建历史记录
+      const fullUrl = createFullUrl(to);
+      h.replaceState({ ...state.value, ...data }, '', fullUrl);
+      
+      location.value = to;
+      state.value = { 
+        ...h.state, 
+        ...data, 
+        position: state.value.position 
+      };
+      
+      // 手动触发一次监听
+      setTimeout(() => {
+        listeners.forEach(fn => fn());
+      }, 0);
+    },
+    go: (delta, shouldTriggerListeners = true) => {
+      if (!shouldTriggerListeners) {
+        // 暂时暂停监听器逻辑
+      }
+      h.go(delta);
+    },
+    listen: listenerManager.listen,
+    destroy: listenerManager.destroy
+  };
 }
 
 // 使用自定义的 hash history

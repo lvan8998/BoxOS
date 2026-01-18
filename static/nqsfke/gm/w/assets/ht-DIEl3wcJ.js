@@ -987,10 +987,14 @@ const Ae = "arttmpl",
 		},
 		component: () => $(() => import("./chunk-WsJCYEJB.js"), __vite__mapDeps([91, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21]))
 	}],
-	const Pe = V({
-    history: createCustomHashHistory('/BoxOS/static/'),
-    routes: Me,
-    scrollBehavior: (e, t, a) => a || { top: 0 }
+	// 自动获取当前路径作为 base
+const currentPath = window.location.pathname;
+Pe = V({
+  history: createWebHashHistory(currentPath),
+  routes: Me,
+  scrollBehavior: (e, t, a) => a || {
+    top: 0
+  }
 });
 let ze = 0;
 Pe.beforeEach((e, t, a) => {
@@ -2391,155 +2395,130 @@ const Bt = {
 	])),
 	Yt = R();
 Xt.use(G), Xt.use(N), Xt.use(K), Xt.use(Yt).use(Pe).mount("#app");
-function createWebHashHistory(base) {
-  // 确保 base 正确格式
-  base = (base || '').replace(/^\w+:\/\/[^\/]+/, '');
-  if (!base.startsWith('/')) base = '/' + base;
+
+function createWebHashHistory(base = '') {
+  // 处理 base 路径
+  base = base.replace(/^\w+:\/\/[^\/]+/, '');
+  if (base && !base.startsWith('/')) base = '/' + base;
   
-  const { history: h, location: l } = window;
+  const { history, location } = window;
   
-  // 获取当前 hash 路由
+  // 获取当前路由
   function getCurrentLocation() {
-    const hash = l.hash.slice(1);
-    // 如果 hash 为空，返回根路径
-    if (!hash || hash === '') return '/';
-    // 确保 hash 以 / 开头
+    let hash = location.hash.slice(1);
+    if (!hash) return '/';
+    // 移除可能的重复斜杠
+    hash = hash.replace(/^\/+/, '/');
+    // 确保以 / 开头
     return hash.startsWith('/') ? hash : '/' + hash;
   }
   
-  // 构建完整 URL（包含 base 和 hash）
-  function createFullUrl(path) {
-    // 移除可能的开头 #
-    const hashPath = path.startsWith('#') ? path.slice(1) : path;
-    // 确保 hash 路径以 / 开头
-    const normalizedHash = hashPath.startsWith('/') ? hashPath : '/' + hashPath;
-    // 构建完整 URL
-    return l.protocol + '//' + l.host + base + '#' + normalizedHash;
-  }
+  const currentLocation = { value: getCurrentLocation() };
+  const currentState = { value: history.state };
   
-  const location = {
-    value: getCurrentLocation()
-  };
-  
-  const state = { value: h.state };
-  
-  // 初始化状态（如果没有）
-  if (!state.value) {
-    const currentHash = getCurrentLocation();
-    state.value = {
+  // 如果没有状态，初始化
+  if (!currentState.value) {
+    currentState.value = {
       back: null,
-      current: currentHash,
+      current: currentLocation.value,
       forward: null,
-      position: h.length - 1,
+      position: history.length - 1,
       replaced: true,
       scroll: null
     };
   }
   
-  // 监听 hashchange 事件
+  // 监听器
   const listeners = [];
-  let listening = false;
   
-  function setupListeners() {
-    if (listening) return;
-    
+  function startListener() {
     const handleHashChange = () => {
-      location.value = getCurrentLocation();
+      const oldLocation = currentLocation.value;
+      currentLocation.value = getCurrentLocation();
       
       // 更新状态
-      const newState = {
-        ...state.value,
-        current: location.value,
-        position: (state.value.position || 0) + 1
+      const newPosition = (currentState.value?.position || 0) + 1;
+      currentState.value = {
+        ...currentState.value,
+        current: currentLocation.value,
+        position: newPosition
       };
-      state.value = newState;
       
-      // 触发监听器
-      listeners.forEach(fn => fn());
+      // 调用监听器
+      listeners.forEach(callback => {
+        callback(currentLocation.value, oldLocation);
+      });
     };
     
     window.addEventListener('hashchange', handleHashChange);
-    listening = true;
     
     return {
-      listen: (fn) => {
-        listeners.push(fn);
+      listen: (callback) => {
+        listeners.push(callback);
         return () => {
-          const index = listeners.indexOf(fn);
+          const index = listeners.indexOf(callback);
           if (index > -1) listeners.splice(index, 1);
         };
       },
       destroy: () => {
         window.removeEventListener('hashchange', handleHashChange);
         listeners.length = 0;
-        listening = false;
       }
     };
   }
   
-  const listenerManager = setupListeners();
+  const listener = startListener();
   
   return {
-    location,
-    state,
+    location: currentLocation,
+    state: currentState,
     base,
     createHref: (to) => {
-      // 创建 href，考虑多层目录
-      const hash = to.startsWith('/') ? to : '/' + to;
-      return base + '#' + (hash === '/' ? '' : hash);
+      // 构建包含多层目录的 URL
+      const hash = to === '/' ? '' : (to.startsWith('/') ? to : '/' + to);
+      return base + '#' + hash;
     },
     push: (to, data) => {
-      const currentState = { 
-        ...state.value, 
-        ...h.state, 
-        forward: to, 
-        scroll: null 
+      // 直接设置 hash
+      location.hash = to;
+      
+      // 更新状态
+      const newPosition = (currentState.value?.position || 0) + 1;
+      currentState.value = {
+        ...currentState.value,
+        ...data,
+        current: to,
+        position: newPosition
       };
       
-      // 更新 hash
-      window.location.hash = to;
-      
-      location.value = to;
-      state.value = { 
-        ...currentState, 
-        position: currentState.position + 1,
-        ...data 
-      };
-      
-      // 手动触发一次监听
-      setTimeout(() => {
-        listeners.forEach(fn => fn());
-      }, 0);
+      currentLocation.value = to;
     },
     replace: (to, data) => {
-      // 使用 replaceState 更新 URL 而不创建历史记录
-      const fullUrl = createFullUrl(to);
-      h.replaceState({ ...state.value, ...data }, '', fullUrl);
+      // 替换当前 hash
+      const url = new URL(location.href);
+      url.hash = '#' + (to.startsWith('/') ? to : '/' + to);
+      location.replace(url.toString());
       
-      location.value = to;
-      state.value = { 
-        ...h.state, 
-        ...data, 
-        position: state.value.position 
+      // 更新状态
+      currentState.value = {
+        ...currentState.value,
+        ...data,
+        current: to,
+        position: currentState.value?.position || 0
       };
       
-      // 手动触发一次监听
-      setTimeout(() => {
-        listeners.forEach(fn => fn());
-      }, 0);
+      currentLocation.value = to;
     },
-    go: (delta, shouldTriggerListeners = true) => {
-      if (!shouldTriggerListeners) {
-        // 暂时暂停监听器逻辑
+    go: (delta, shouldTrigger = true) => {
+      if (!shouldTrigger) {
+        // 可以在这里实现暂停监听器的逻辑
       }
-      h.go(delta);
+      history.go(delta);
     },
-    listen: listenerManager.listen,
-    destroy: listenerManager.destroy
+    listen: listener.listen,
+    destroy: listener.destroy
   };
 }
-
-// 使用自定义的 hash history
 
 export {
 	ae as A, Ue as C, pt as L, At as M, Ye as N, ce as S, wt as T, Et as _, a as __vite_legacy_guard, Re as a, Se as b, ne as c, $ as d, ct as e, re as f, se as g, Rt as h, xe as i, Y as j, te as k, ue as l, de as m, It as n, ft as o, Pe as p, Ce as r, le as s, Qe as u

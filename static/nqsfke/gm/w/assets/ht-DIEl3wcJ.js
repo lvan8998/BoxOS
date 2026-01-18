@@ -727,7 +727,7 @@ const Ae = "arttmpl",
 		}
 	}),
 	Me = [{
-		path: "/BoxOS/static/#/",
+		path: "/BoxOS/static/#",
 		name: "Home",
 		meta: {
 			title: "首页"

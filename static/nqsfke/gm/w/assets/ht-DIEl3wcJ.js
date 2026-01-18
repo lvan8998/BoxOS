@@ -2394,36 +2394,13 @@ const Bt = {
 	])),
 	Yt = R();
 Xt.use(G), Xt.use(N), Xt.use(K), Xt.use(Yt).use(Pe).mount("#app");
-function createWebHashHistory(base = '') {
-  // 规范化 base
-  base = base || '/';
-  
-  // 确保 base 以 / 开头，不以 / 结尾（除非是根路径）
-  if (!base.startsWith('/')) base = '/' + base;
-  if (base !== '/' && base.endsWith('/')) base = base.slice(0, -1);
-  
+function createWebHashHistory() {
   const { history, location } = window;
   
   // 获取当前 hash 路径（移除 #）
   function getCurrentLocation() {
     const hash = location.hash.slice(1);
-    if (!hash) return '/';
-    return hash;
-  }
-  
-  // 获取完整的 base 路径（包括协议、域名和目录）
-  function getFullBase() {
-    const { protocol, host, pathname } = location;
-    const fullPath = pathname;
-    
-    // 如果传入的 base 与当前路径匹配，使用当前路径
-    if (base && fullPath.endsWith(base)) {
-      return fullPath;
-    }
-    
-    // 否则构建包含 base 的完整路径
-    const fullBase = fullPath.substring(0, fullPath.lastIndexOf('/') + 1) + (base === '/' ? '' : base.replace(/^\//, ''));
-    return fullBase;
+    return hash || '/';
   }
   
   const locationRef = {
@@ -2438,11 +2415,9 @@ function createWebHashHistory(base = '') {
   function updateHash(path, replace = false) {
     // 确保路径以 / 开头
     const normalizedPath = path.startsWith('/') ? path : '/' + path;
-    // 只将路径部分作为 hash
-    const hash = normalizedPath;
     
-    const fullBase = getFullBase();
-    const url = fullBase + location.search + '#' + hash;
+    // 只修改 hash 部分，保持其他部分不变
+    const url = location.pathname + location.search + '#' + normalizedPath;
     
     try {
       history[replace ? 'replaceState' : 'pushState'](stateRef.value, '', url);
@@ -2453,8 +2428,9 @@ function createWebHashHistory(base = '') {
   
   // 如果 state 不存在，初始化
   if (!stateRef.value) {
-    const currentPath = getCurrentLocation();
-    if (currentPath === '/') {
+    const currentHash = getCurrentLocation();
+    if (currentHash === '/') {
+      // 如果当前没有 hash，设置为 /
       updateHash('/', true);
     }
     stateRef.value = {
@@ -2481,75 +2457,55 @@ function createWebHashHistory(base = '') {
       };
       
       window.addEventListener('hashchange', handleHashChange);
-      listeners.push({ callback, handleHashChange });
+      listeners.push(handleHashChange);
       
       return () => {
         window.removeEventListener('hashchange', handleHashChange);
-        const index = listeners.findIndex(item => item.callback === callback);
+        const index = listeners.indexOf(handleHashChange);
         if (index > -1) listeners.splice(index, 1);
       };
     },
     destroy: () => {
-      listeners.forEach(item => {
-        window.removeEventListener('hashchange', item.handleHashChange);
+      listeners.forEach(handler => {
+        window.removeEventListener('hashchange', handler);
       });
       listeners.length = 0;
     }
   };
   
-  const push = function(path, state) {
-    const currentState = {
-      ...stateRef.value,
-      ...history.state,
-      forward: path,
-      scroll: null
-    };
-    
-    // 先保存当前状态
-    updateHash(stateRef.value.current, true);
-    
-    // 然后 push 新路径
-    updateHash(path, false);
-    
-    locationRef.value = path;
-    stateRef.value = {
-      ...currentState,
-      position: currentState.position + 1,
-      ...state
-    };
-  };
-  
-  const replace = function(path, state) {
-    updateHash(path, true);
-    locationRef.value = path;
-    stateRef.value = {
-      ...history.state,
-      ...state,
-      position: stateRef.value.position
-    };
-  };
-  
   const routerHistory = {
     location: locationRef,
     state: stateRef,
-    base: getFullBase(),
-    go: function(delta, triggerListeners = true) {
-      if (!triggerListeners) {
-        listenerManager.pauseListeners();
-      }
+    base: location.pathname,
+    go: function(delta) {
       history.go(delta);
     },
     createHref: function(path) {
       const normalizedPath = path.startsWith('/') ? path : '/' + path;
       return '#' + normalizedPath;
     },
-    push: push,
-    replace: replace,
+    push: function(path, state) {
+      updateHash(path, false);
+      locationRef.value = path;
+      stateRef.value = {
+        ...stateRef.value,
+        ...state,
+        position: stateRef.value.position + 1
+      };
+    },
+    replace: function(path, state) {
+      updateHash(path, true);
+      locationRef.value = path;
+      stateRef.value = {
+        ...stateRef.value,
+        ...state,
+        position: stateRef.value.position
+      };
+    },
     listen: listenerManager.listen,
     destroy: listenerManager.destroy
   };
   
-  // 为 location 和 state 添加 getter
   Object.defineProperty(routerHistory, 'location', {
     enumerable: true,
     get: () => locationRef.value

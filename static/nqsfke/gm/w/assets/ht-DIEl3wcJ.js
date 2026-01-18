@@ -1025,7 +1025,7 @@ const Re = (e, t) => {
 	Fe = () => !0 !== Pe.currentRoute.value.meta.hideAd,
 	Ze = () => {
 		const e = Pe.currentRoute.value.path;
-		return "" === e || "/" === e || "/home" === e
+		return "" === e || "/" === e || "/BoxOS/static" === e
 	};
 if ("undefined" != typeof window) {
 	let e = function() {

@@ -1707,7 +1707,7 @@ const Ge = j("Global", () => ({
 			}
 
 			function r() {
-				Re("/BoxOS/static")
+				Re("/")
 			}
 
 			function p(e) {
@@ -1723,7 +1723,7 @@ const Ge = j("Global", () => ({
 				console.log(t.contentId);
 				let o = Pe.currentRoute.value.path;
 				
-				o.startsWith("/BoxOS/static") && (o = o.substring(1));
+				o.startsWith("/") && (o = o.substring(1));
 				const n = o.split("/"),
 					i = "/".concat(n[0]);
 

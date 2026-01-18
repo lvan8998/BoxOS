@@ -988,9 +988,9 @@ const Ae = "arttmpl",
 		component: () => $(() => import("./chunk-WsJCYEJB.js"), __vite__mapDeps([91, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21]))
 	}],
 	// 自动获取当前路径作为 base
-const currentPath = window.location.pathname;
+// 如果是多层目录，传入你的基础路径
 Pe = V({
-  history: createWebHashHistory(currentPath),
+  history: createWebHashHistory('/BoxOS/static/'),  // 你的多层目录路径
   routes: Me,
   scrollBehavior: (e, t, a) => a || {
     top: 0

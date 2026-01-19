@@ -158,12 +158,32 @@ const Q = {},
 		deviceId: ""
 	};
 
+// function Y() {
+// 	{
+// 		const e = window.location.protocol,
+// 			t = window.location.port;
+// 		return "".concat(e, "//").concat(window.location.hostname).concat(t ? ":" + t : "")
+// 	}
+// }
 function Y() {
-	{
-		const e = window.location.protocol,
-			t = window.location.port;
-		return "".concat(e, "//").concat(window.location.hostname).concat(t ? ":" + t : "")
-	}
+    {
+        const e = window.location.protocol,
+            t = window.location.port,
+            // 获取当前页面的路径，用于计算基路径
+            basePath = window.location.pathname;
+        
+        // 如果是根目录，直接返回域名
+        if (basePath === '/' || basePath === '/index.html') {
+            return "".concat(e, "//").concat(window.location.hostname).concat(t ? ":" + t : "");
+        }
+        
+        // 提取基路径（去掉文件名）
+        const pathSegments = basePath.split('/');
+        pathSegments.pop(); // 移除文件名
+        const baseDir = pathSegments.join('/') || '/';
+        
+        return "".concat(e, "//").concat(window.location.hostname).concat(t ? ":" + t : "").concat(baseDir);
+    }
 }
 
 function ee() {

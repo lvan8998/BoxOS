@@ -78,6 +78,7 @@ import "./chunk-Xpcu2h2O.js";
 import {
 	i as K
 } from "./chunk-fUqY2CL3.js";
+import { createWebHashHistory } from 'vue-router';
 import "./chunk-DQhVL27x.js";
 import "./chunk-cn7T4ICr.js";
 import "./chunk-B9m9zD55.js";
@@ -648,7 +649,8 @@ async function Ce(e, t = {}, a = !1) {
 		throw new Error("Failed to send request: " + o.message)
 	}
 }
-
+const { createApp } = Vue;
+const { createRouter, createWebHashHistory } = VueRouter;
 const Ae = "arttmpl",
 	ke = "friendtmpl",
 	Ee = "storetmpl",
@@ -2401,129 +2403,6 @@ const Bt = {
 	Yt = R();
 Xt.use(G), Xt.use(N), Xt.use(K), Xt.use(Yt).use(Pe).mount("#app");
 
-function createWebHashHistory(base = '') {
-  // 处理 base 路径
-  base = base.replace(/^\w+:\/\/[^\/]+/, '');
-  if (base && !base.startsWith('/')) base = '/' + base;
-  
-  const { history, location } = window;
-  
-  // 获取当前路由
-  function getCurrentLocation() {
-    let hash = location.hash.slice(1);
-    if (!hash) return '/';
-    // 移除可能的重复斜杠
-    hash = hash.replace(/^\/+/, '/');
-    // 确保以 / 开头
-    return hash.startsWith('/') ? hash : '/' + hash;
-  }
-  
-  const currentLocation = { value: getCurrentLocation() };
-  const currentState = { value: history.state };
-  
-  // 如果没有状态，初始化
-  if (!currentState.value) {
-    currentState.value = {
-      back: null,
-      current: currentLocation.value,
-      forward: null,
-      position: history.length - 1,
-      replaced: true,
-      scroll: null
-    };
-  }
-  
-  // 监听器
-  const listeners = [];
-  
-  function startListener() {
-    const handleHashChange = () => {
-      const oldLocation = currentLocation.value;
-      currentLocation.value = getCurrentLocation();
-      
-      // 更新状态
-      const newPosition = (currentState.value?.position || 0) + 1;
-      currentState.value = {
-        ...currentState.value,
-        current: currentLocation.value,
-        position: newPosition
-      };
-      
-      // 调用监听器
-      listeners.forEach(callback => {
-        callback(currentLocation.value, oldLocation);
-      });
-    };
-    
-    window.addEventListener('hashchange', handleHashChange);
-    
-    return {
-      listen: (callback) => {
-        listeners.push(callback);
-        return () => {
-          const index = listeners.indexOf(callback);
-          if (index > -1) listeners.splice(index, 1);
-        };
-      },
-      destroy: () => {
-        window.removeEventListener('hashchange', handleHashChange);
-        listeners.length = 0;
-      }
-    };
-  }
-  
-  const listener = startListener();
-  
-  return {
-    location: currentLocation,
-    state: currentState,
-    base,
-    createHref: (to) => {
-      // 构建包含多层目录的 URL
-      const hash = to === '/' ? '' : (to.startsWith('/') ? to : '/' + to);
-      return base + '#' + hash;
-    },
-    push: (to, data) => {
-      // 直接设置 hash
-      location.hash = to;
-      
-      // 更新状态
-      const newPosition = (currentState.value?.position || 0) + 1;
-      currentState.value = {
-        ...currentState.value,
-        ...data,
-        current: to,
-        position: newPosition
-      };
-      
-      currentLocation.value = to;
-    },
-    replace: (to, data) => {
-      // 替换当前 hash
-      const url = new URL(location.href);
-      url.hash = '#' + (to.startsWith('/') ? to : '/' + to);
-      location.replace(url.toString());
-      
-      // 更新状态
-      currentState.value = {
-        ...currentState.value,
-        ...data,
-        current: to,
-        position: currentState.value?.position || 0
-      };
-      
-      currentLocation.value = to;
-    },
-    go: (delta, shouldTrigger = true) => {
-      if (!shouldTrigger) {
-        // 可以在这里实现暂停监听器的逻辑
-      }
-      history.go(delta);
-    },
-    listen: listener.listen,
-    destroy: listener.destroy
-  };
-}
 
 export {
 	ae as A, Ue as C, pt as L, At as M, Ye as N, ce as S, wt as T, Et as _, a as __vite_legacy_guard, Re as a, Se as b, ne as c, $ as d, ct as e, re as f, se as g, Rt as h, xe as i, Y as j, te as k, ue as l, de as m, It as n, ft as o, Pe as p, Ce as r, le as s, Qe as u

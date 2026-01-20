@@ -649,8 +649,8 @@ async function Ce(e, t = {}, a = !1) {
 		throw new Error("Failed to send request: " + o.message)
 	}
 }
-const { createApp } = Vue;
-const { createRouter, createWebHashHistory } = VueRouter;
+//const { createApp } = Vue;
+//const { createRouter, createWebHashHistory } = VueRouter;
 const Ae = "arttmpl",
 	ke = "friendtmpl",
 	Ee = "storetmpl",

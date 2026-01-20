@@ -78,7 +78,7 @@ import "./chunk-Xpcu2h2O.js";
 import {
 	i as K
 } from "./chunk-fUqY2CL3.js";
-import { createWebHashHistory } from 'vue-router';
+//import { createWebHashHistory } from 'vue-router';
 import "./chunk-DQhVL27x.js";
 import "./chunk-cn7T4ICr.js";
 import "./chunk-B9m9zD55.js";
@@ -996,12 +996,19 @@ const Ae = "arttmpl",
 	}],
 	// 自动获取当前路径作为 base
 // 如果是多层目录，传入你的基础路径
-Pe = V({
-  history: createWebHashHistory('/BoxOS/static/'),  // 你的多层目录路径
-  routes: Me,
-  scrollBehavior: (e, t, a) => a || {
-    top: 0
-  }
+// Pe = V({
+//   history: createWebHashHistory('/BoxOS/static/'),  // 你的多层目录路径
+//   routes: Me,
+//   scrollBehavior: (e, t, a) => a || {
+//     top: 0
+//   }
+// });
+	const Pe = VueRouter.createRouter({
+	history: VueRouter.createWebHashHistory(),
+	routes: Me,
+	scrollBehavior: (e, t, a) => a || {
+		top: 0
+	}
 });
 let ze = 0;
 Pe.beforeEach((e, t, a) => {

@@ -764,7 +764,7 @@ const Ae = "arttmpl",
 		component: () => $(() => import("./chunk-B4lq4qLD.js"), __vite__mapDeps([22, 23, 5, 3, 24, 12, 13, 14, 25, 4, 1, 2, 26, 27, 6, 7, 8, 9, 10, 11, 15, 16, 17, 18, 19, 28, 21])),
 		props: !0
 	}, {
-		path: "/BoxOS/static/#/detail/:id",
+		path: "/detail/:id",
 		name: "DetailPage",
 		meta: {
 			title: "详情"

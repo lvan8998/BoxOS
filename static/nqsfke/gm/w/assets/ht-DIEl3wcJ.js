@@ -651,6 +651,9 @@ async function Ce(e, t = {}, a = !1) {
 }
 //const { createApp } = Vue;
 //const { createRouter, createWebHashHistory } = VueRouter;
+window.debugCe = Ce;  // 添加到全局
+window.debugAe = ae;  // 添加到全局
+window.debugXe = xe;  // 添加到全局
 const Ae = "arttmpl",
 	ke = "friendtmpl",
 	Ee = "storetmpl",

@@ -1010,6 +1010,18 @@ const Ae = "arttmpl",
 		top: 0
 	}
 });
+Pe.beforeEach((to, from, next) => {
+    console.log('路由跳转:', {
+        来源: from.fullPath,
+        目标: to.fullPath,
+        路径: to.path,
+        参数: to.params,
+        查询: to.query,
+        完整URL: window.location.href,
+        Hash: window.location.hash
+    });
+    next();
+});
 let ze = 0;
 Pe.beforeEach((e, t, a) => {
 	document.title = "".concat(ee());

@@ -767,14 +767,24 @@ const Ae = "arttmpl",
 		component: () => $(() => import("./chunk-B4lq4qLD.js"), __vite__mapDeps([22, 23, 5, 3, 24, 12, 13, 14, 25, 4, 1, 2, 26, 27, 6, 7, 8, 9, 10, 11, 15, 16, 17, 18, 19, 28, 21])),
 		props: !0
 	}, {
-		path: "/detail/:id",
-		name: "DetailPage",
-		meta: {
-			title: "详情"
-		},
-		component: () => $(() => import("./chunk-CUOO64VY.js").then(e => e.i), __vite__mapDeps([29, 6, 3, 5, 2, 26, 4, 30, 7, 31, 32, 10, 33, 34, 12, 13, 14])),
-		props: !0
-	}, {
+    path: "/detail/:id",
+    name: "DetailPage",
+    meta: {
+        title: "详情"
+    },
+    component: () => {
+        console.log('开始加载Detail组件，ID:', Pe.currentRoute.value?.params?.id);
+        return $(() => import("./chunk-CUOO64VY.js").then(e => {
+            console.log('Detail组件加载完成');
+            return e.i;
+        }), __vite__mapDeps([29, 6, 3, 5, 2, 26, 4, 30, 7, 31, 32, 10, 33, 34, 12, 13, 14]));
+    },
+    props: !0,
+    beforeEnter: (to, from, next) => {
+        console.log('进入Detail路由:', to.params);
+        next();
+    }
+}, {
 		path: "/search",
 		name: "SearchPage",
 		meta: {

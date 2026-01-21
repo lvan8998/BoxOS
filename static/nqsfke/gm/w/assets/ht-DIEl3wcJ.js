@@ -1034,12 +1034,20 @@ Pe.afterEach((e, t) => {
 		n.setLoading(!1)
 	}, 100)
 });
+// const Re = (e, t) => {
+// 		Pe.push({
+// 			path: e,
+// 			query: t
+// 		})
+// 	},
 const Re = (e, t) => {
-		Pe.push({
-			path: e,
-			query: t
-		})
-	},
+    // 确保路径以 / 开头，但不是以 # 开头
+    let path = e.startsWith('/') ? e : '/' + e;
+    Pe.push({
+        path: path,
+        query: t
+    })
+},
 	Ve = {
 		[Ae]: "/chiGua",
 		[ke]: "/tongCheng",

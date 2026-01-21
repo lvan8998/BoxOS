@@ -1003,7 +1003,7 @@ const Ae = "arttmpl",
 //     top: 0
 //   }
 // });
-	const Pe = VueRouter.createRouter({
+ Pe = VueRouter.createRouter({
 	history: VueRouter.createWebHashHistory(),
 	routes: Me,
 	scrollBehavior: (e, t, a) => a || {

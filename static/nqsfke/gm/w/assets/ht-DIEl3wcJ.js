@@ -1006,7 +1006,26 @@ const Ae = "arttmpl",
 			hideAd: !0
 		},
 		component: () => $(() => import("./chunk-WsJCYEJB.js"), __vite__mapDeps([91, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21]))
-	}],
+	},
+		  {
+        path: "/:path(.*)*",
+        name: "NotFound",
+        component: () => {
+            console.log('❌ 进入404页面，当前路径:', window.location.hash);
+            console.log('   路由匹配失败，可能的原因:');
+            console.log('   1. 路径不匹配任何路由');
+            console.log('   2. 路由配置错误');
+            console.log('   3. 组件加载失败');
+            
+            // 创建一个简单的404组件
+            return {
+                template: '<div style="padding: 20px; color: red;">404 - 页面未找到<br>当前路径: ' + window.location.hash + '</div>',
+                mounted() {
+                    console.log('404组件已挂载');
+                }
+            };
+        }
+    }],
 	// 自动获取当前路径作为 base
 // 如果是多层目录，传入你的基础路径
 // Pe = V({

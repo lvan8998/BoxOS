@@ -1036,22 +1036,22 @@ const Ae = "arttmpl",
 		top: 0
 	}
 });
-Pe.isReady().then(() => {
-    console.log('🔧 路由准备就绪');
-    console.log('🌐 当前hash:', window.location.hash);
-    console.log('🛣️ 路由当前路径:', Pe.currentRoute.value.path);
+setTimeout(() => {
+    const hash = window.location.hash;
+    console.log('🔍 检查初始路由状态:');
+    console.log('  当前hash:', hash);
+    console.log('  路由路径:', Pe.currentRoute.value.path);
     
-    // 如果当前hash有值但路由路径不正确，手动触发导航
-    if (window.location.hash && Pe.currentRoute.value.path === '/') {
-        const hashPath = window.location.hash.substring(1); // 去掉#
-        console.log('🔄 检测到路由不匹配，尝试修复:', hashPath);
-        
-        // 手动触发路由导航
-        Pe.replace(hashPath).catch(err => {
-            console.error('❌ 路由修复失败:', err);
-        });
+    if (hash && hash.startsWith('#/')) {
+        const path = hash.substring(1); // 去掉#
+        if (Pe.currentRoute.value.path === '/' && path !== '/') {
+            console.log('🔄 初始路由不匹配，修复到:', path);
+            Pe.replace(path).catch(err => {
+                console.error('路由修复失败:', err);
+            });
+        }
     }
-});
+}, 100);
 Pe.beforeEach((to, from, next) => {
     console.log('路由跳转:', {
         来源: from.fullPath,
@@ -1073,30 +1073,9 @@ const testMatch = Pe.resolve('/detail/64561');
 console.log('🧪 测试路由匹配:', testMatch);
 let ze = 0;
 Pe.beforeEach((e, t, a) => {
-    console.log('🔒 路由守卫 beforeEach 触发:');
-    console.log('  当前路由:', Pe.currentRoute.value);
-    console.log('  目标路由:', t);
-    console.log('  当前hash:', window.location.hash);
-    
-    // 如果是初始导航且hash路径不匹配，修正目标路由
-    const hash = window.location.hash;
-    if (hash && hash.startsWith('#/')) {
-        const hashPath = hash.substring(1); // 去掉#
-        if (t.path === '/' && hashPath !== '/') {
-            console.log('🔄 检测到初始导航路径不匹配，修正为:', hashPath);
-            // 修正目标路由
-            const matched = Pe.resolve(hashPath);
-            if (matched.matched.length > 0) {
-                console.log('✅ 找到匹配的路由，重定向到:', hashPath);
-                a({ path: hashPath });
-                return;
-            }
-        }
-    }
-    
-    document.title = "".concat(ee());
-    const o = Se();
-    o.saveScrollPos(), o.setLoading(!0), o.resetFloat(), a()
+	document.title = "".concat(ee());
+	const o = Se();
+	o.saveScrollPos(), o.setLoading(!0), o.resetFloat(), a()
 });
 let je = 0;
 Pe.afterEach((e, t) => {

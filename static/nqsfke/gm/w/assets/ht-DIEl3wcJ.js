@@ -1036,22 +1036,46 @@ const Ae = "arttmpl",
 		top: 0
 	}
 });
-setTimeout(() => {
-    const hash = window.location.hash;
-    console.log('🔍 检查初始路由状态:');
-    console.log('  当前hash:', hash);
-    console.log('  路由路径:', Pe.currentRoute.value.path);
+let hasFixedInitialRoute = false;
+
+const fixInitialRoute = () => {
+    if (hasFixedInitialRoute) return;
     
+    const hash = window.location.hash;
     if (hash && hash.startsWith('#/')) {
-        const path = hash.substring(1); // 去掉#
-        if (Pe.currentRoute.value.path === '/' && path !== '/') {
-            console.log('🔄 初始路由不匹配，修复到:', path);
+        const path = hash.substring(1);
+        console.log('🔍 检查初始路由:');
+        console.log('  当前hash:', hash);
+        console.log('  当前路由路径:', Pe.currentRoute.value.path);
+        console.log('  目标路径:', path);
+        
+        if (path !== '/' && Pe.currentRoute.value.path === '/') {
+            console.log('🔄 执行初始路由修复:', path);
+            hasFixedInitialRoute = true;
+            
+            // 使用 replace 而不是 push，避免历史记录
             Pe.replace(path).catch(err => {
                 console.error('路由修复失败:', err);
+                // 即使失败也不要无限重试
             });
         }
     }
-}, 100);
+};
+
+// 等待路由准备就绪后执行修复
+Pe.isReady().then(() => {
+    console.log('✅ 路由准备就绪');
+    fixInitialRoute();
+});
+
+// 同时监听hash变化，但只处理初始情况
+let isInitialLoad = true;
+window.addEventListener('hashchange', () => {
+    if (isInitialLoad) {
+        isInitialLoad = false;
+        setTimeout(fixInitialRoute, 100);
+    }
+});
 Pe.beforeEach((to, from, next) => {
     console.log('路由跳转:', {
         来源: from.fullPath,

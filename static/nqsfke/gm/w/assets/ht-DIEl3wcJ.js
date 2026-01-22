@@ -773,15 +773,31 @@ const Ae = "arttmpl",
         title: "详情"
     },
     component: () => {
-        console.log('开始加载Detail组件，ID:', Pe.currentRoute.value?.params?.id);
+        // 直接从hash中提取ID
+        const hash = window.location.hash;
+        console.log('🔥 开始加载Detail组件，当前hash:', hash);
+        
+        // 从 #/detail/64561 中提取64561
+        let id = null;
+        if (hash && hash.includes('/detail/')) {
+            const match = hash.match(/\/detail\/(\d+)/);
+            if (match && match[1]) {
+                id = match[1];
+            }
+        }
+        console.log('🔍 提取的ID:', id);
+        
         return $(() => import("./chunk-CUOO64VY.js").then(e => {
-            console.log('Detail组件加载完成');
+            console.log('✅ Detail组件加载完成');
             return e.i;
         }), __vite__mapDeps([29, 6, 3, 5, 2, 26, 4, 30, 7, 31, 32, 10, 33, 34, 12, 13, 14]));
     },
     props: !0,
     beforeEnter: (to, from, next) => {
-        console.log('进入Detail路由:', to.params);
+        console.log('🚦 进入Detail路由beforeEnter:');
+        console.log('  to.path:', to.path);
+        console.log('  to.params:', to.params);
+        console.log('  to.fullPath:', to.fullPath);
         next();
     }
 }, {

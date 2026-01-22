@@ -2509,6 +2509,27 @@ console.log('  当前hash:', window.location.hash);
 console.log('  hash去掉#:', window.location.hash.substring(1));
 console.log('  路由当前路径:', Pe.currentRoute.value.path);
 
+// 添加全局调试
+window.debugRoute = {
+    current: () => Pe.currentRoute.value,
+    hash: () => window.location.hash,
+    history: () => Pe.history,
+    test: () => {
+        console.log('=== 路由状态调试 ===');
+        console.log('当前hash:', window.location.hash);
+        console.log('当前路由:', Pe.currentRoute.value);
+        console.log('路由实例:', Pe);
+        
+        const hash = window.location.hash;
+        if (hash && hash.startsWith('#/')) {
+            const path = hash.substring(1);
+            console.log('解析路径:', path);
+            const resolved = Pe.resolve(path);
+            console.log('路由解析结果:', resolved);
+        }
+    }
+};
+
 export {
 	ae as A, Ue as C, pt as L, At as M, Ye as N, ce as S, wt as T, Et as _, a as __vite_legacy_guard, Re as a, Se as b, ne as c, $ as d, ct as e, re as f, se as g, Rt as h, xe as i, Y as j, te as k, ue as l, de as m, It as n, ft as o, Pe as p, Ce as r, le as s, Qe as u
 };

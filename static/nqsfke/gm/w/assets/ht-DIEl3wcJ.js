@@ -2449,7 +2449,12 @@ const Bt = {
 	])),
 	Yt = R();
 Xt.use(G), Xt.use(N), Xt.use(K), Xt.use(Yt).use(Pe).mount("#app");
-
+// 确保所有地方都使用正确的模式
+console.log('🎯 路由模式检查:');
+console.log('  当前URL:', window.location.href);
+console.log('  当前hash:', window.location.hash);
+console.log('  hash去掉#:', window.location.hash.substring(1));
+console.log('  路由当前路径:', Pe.currentRoute.value.path);
 
 export {
 	ae as A, Ue as C, pt as L, At as M, Ye as N, ce as S, wt as T, Et as _, a as __vite_legacy_guard, Re as a, Se as b, ne as c, $ as d, ct as e, re as f, se as g, Rt as h, xe as i, Y as j, te as k, ue as l, de as m, It as n, ft as o, Pe as p, Ce as r, le as s, Qe as u

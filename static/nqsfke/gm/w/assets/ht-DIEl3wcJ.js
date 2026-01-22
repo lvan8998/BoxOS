@@ -766,7 +766,7 @@ const Ae = "arttmpl",
 		},
 		component: () => $(() => import("./chunk-B4lq4qLD.js"), __vite__mapDeps([22, 23, 5, 3, 24, 12, 13, 14, 25, 4, 1, 2, 26, 27, 6, 7, 8, 9, 10, 11, 15, 16, 17, 18, 19, 28, 21])),
 		props: !0
-	}, {
+	},{
     path: "/detail/:id",
     name: "DetailPage",
     meta: {
@@ -775,47 +775,36 @@ const Ae = "arttmpl",
     component: () => {
         console.log('🔥 开始加载Detail组件');
         
-        // 直接从hash中提取ID
-        const hash = window.location.hash;
-        const match = hash.match(/\/detail\/(\d+)/);
-        const id = match ? match[1] : null;
-        
-        console.log('🆔 从hash提取的ID:', id);
-        console.log('🛣️ 当前路由路径:', Pe.currentRoute.value.path);
-        console.log('📊 当前路由参数:', Pe.currentRoute.value.params);
-        
-        // 我们知道了ID，可以传递给组件
-        // 但由于组件是通过props:true获取参数，我们需要确保路由状态正确
-        // 临时修改路由的当前状态
-        if (id && !Pe.currentRoute.value.params.id) {
-            console.log('🔧 临时修复路由参数...');
-            Pe.currentRoute.value.params.id = id;
-        }
-        
-        return $(() => import("./chunk-nKNq4phu.js").then(e => {
-            console.log('✅ Detail组件加载完成');//nKNq4phu  CUOO64VY
-            return e.i;
-        }), __vite__mapDeps([29, 6, 3, 5, 2, 26, 4, 30, 7, 31, 32, 10, 33, 34, 12, 13, 14]));
+        return new Promise((resolve) => {
+            // 等待路由状态更新
+            const checkRoute = () => {
+                console.log('🔄 检查路由状态...');
+                console.log('  当前路由路径:', Pe.currentRoute.value.path);
+                console.log('  当前路由参数:', Pe.currentRoute.value.params);
+                console.log('  当前hash:', window.location.hash);
+                
+                // 如果路由已经更新，或者我们可以从hash中提取ID
+                const hash = window.location.hash;
+                const match = hash.match(/\/detail\/(\d+)/);
+                const idFromHash = match ? match[1] : null;
+                
+                if (Pe.currentRoute.value.params.id || idFromHash) {
+                    console.log('✅ 路由状态已准备好');
+                    console.log('🆔 最终ID:', Pe.currentRoute.value.params.id || idFromHash);
+                    resolve($(() => import("./chunk-CUOO64VY.js").then(e => {
+                        console.log('✅ Detail组件加载完成');
+                        return e.i;
+                    }), __vite__mapDeps([29, 6, 3, 5, 2, 26, 4, 30, 7, 31, 32, 10, 33, 34, 12, 13, 14])));
+                } else {
+                    console.log('⏳ 路由状态未就绪，等待...');
+                    setTimeout(checkRoute, 10);
+                }
+            };
+            
+            checkRoute();
+        });
     },
-    props: (route) => {
-        console.log('📤 props函数被调用:');
-        console.log('  路由参数:', route.params);
-        
-        // 如果路由参数中没有id，从hash中提取
-        if (!route.params.id) {
-            const hash = window.location.hash;
-            const match = hash.match(/\/detail\/(\d+)/);
-            if (match && match[1]) {
-                console.log('🔄 从hash补充ID到props:', match[1]);
-                return {
-                    ...route.params,
-                    id: match[1]
-                };
-            }
-        }
-        
-        return route.params;
-    }
+    props: !0
 }, {
 		path: "/search",
 		name: "SearchPage",
@@ -1095,9 +1084,24 @@ const testMatch = Pe.resolve('/detail/64561');
 console.log('🧪 测试路由匹配:', testMatch);
 let ze = 0;
 Pe.beforeEach((e, t, a) => {
-	document.title = "".concat(ee());
-	const o = Se();
-	o.saveScrollPos(), o.setLoading(!0), o.resetFloat(), a()
+    console.log('🔒 路由守卫 beforeEach 触发:');
+    console.log('  当前路由:', Pe.currentRoute.value);
+    console.log('  目标路由:', t);
+    
+    // 立即更新路由的当前状态（同步操作）
+    Object.assign(Pe.currentRoute.value, {
+        path: t.path,
+        fullPath: t.fullPath,
+        params: t.params,
+        query: t.query,
+        hash: t.hash
+    });
+    
+    console.log('🔄 更新后的当前路由:', Pe.currentRoute.value);
+    
+    document.title = "".concat(ee());
+    const o = Se();
+    o.saveScrollPos(), o.setLoading(!0), o.resetFloat(), a();
 });
 let je = 0;
 Pe.afterEach((e, t) => {

@@ -772,38 +772,11 @@ const Ae = "arttmpl",
     meta: {
         title: "详情"
     },
-    component: () => {
-        console.log('🔥 开始加载Detail组件');
-        
-        return new Promise((resolve) => {
-            // 等待路由状态更新
-            const checkRoute = () => {
-                console.log('🔄 检查路由状态...');
-                console.log('  当前路由路径:', Pe.currentRoute.value.path);
-                console.log('  当前路由参数:', Pe.currentRoute.value.params);
-                console.log('  当前hash:', window.location.hash);
-                
-                // 如果路由已经更新，或者我们可以从hash中提取ID
-                const hash = window.location.hash;
-                const match = hash.match(/\/detail\/(\d+)/);
-                const idFromHash = match ? match[1] : null;
-                
-                if (Pe.currentRoute.value.params.id || idFromHash) {
-                    console.log('✅ 路由状态已准备好');
-                    console.log('🆔 最终ID:', Pe.currentRoute.value.params.id || idFromHash);
-                    resolve($(() => import("./chunk-CUOO64VY.js").then(e => {
-                        console.log('✅ Detail组件加载完成');
-                        return e.i;
-                    }), __vite__mapDeps([29, 6, 3, 5, 2, 26, 4, 30, 7, 31, 32, 10, 33, 34, 12, 13, 14])));
-                } else {
-                    console.log('⏳ 路由状态未就绪，等待...');
-                    setTimeout(checkRoute, 10);
-                }
-            };
-            
-            checkRoute();
-        });
-    },
+    component: () => $(() => import("./chunk-CUOO64VY.js").then(module => {
+        // 模块导出: { i: { default: 组件 }, u: ... }
+        // 我们需要返回组件，即 module.i.default
+        return module.i.default;
+    }), __vite__mapDeps([29, 6, 3, 5, 2, 26, 4, 30, 7, 31, 32, 10, 33, 34, 12, 13, 14])),
     props: !0
 }, {
 		path: "/search",

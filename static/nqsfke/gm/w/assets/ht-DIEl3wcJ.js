@@ -1035,6 +1035,13 @@ Pe.beforeEach((to, from, next) => {
     });
     next();
 });
+console.log('🔄 路由实例Pe已创建');
+console.log('📋 路由数量:', Pe.getRoutes().length);
+console.log('🔍 所有路由:', Pe.getRoutes());
+
+// 检查是否能匹配到 /detail/:id
+const testMatch = Pe.resolve('/detail/64561');
+console.log('🧪 测试路由匹配:', testMatch);
 let ze = 0;
 Pe.beforeEach((e, t, a) => {
 	document.title = "".concat(ee());

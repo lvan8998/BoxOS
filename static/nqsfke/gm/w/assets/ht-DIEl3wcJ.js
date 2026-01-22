@@ -773,32 +773,48 @@ const Ae = "arttmpl",
         title: "详情"
     },
     component: () => {
+        console.log('🔥 开始加载Detail组件');
+        
         // 直接从hash中提取ID
         const hash = window.location.hash;
-        console.log('🔥 开始加载Detail组件，当前hash:', hash);
+        const match = hash.match(/\/detail\/(\d+)/);
+        const id = match ? match[1] : null;
         
-        // 从 #/detail/64561 中提取64561
-        let id = null;
-        if (hash && hash.includes('/detail/')) {
-            const match = hash.match(/\/detail\/(\d+)/);
-            if (match && match[1]) {
-                id = match[1];
-            }
+        console.log('🆔 从hash提取的ID:', id);
+        console.log('🛣️ 当前路由路径:', Pe.currentRoute.value.path);
+        console.log('📊 当前路由参数:', Pe.currentRoute.value.params);
+        
+        // 我们知道了ID，可以传递给组件
+        // 但由于组件是通过props:true获取参数，我们需要确保路由状态正确
+        // 临时修改路由的当前状态
+        if (id && !Pe.currentRoute.value.params.id) {
+            console.log('🔧 临时修复路由参数...');
+            Pe.currentRoute.value.params.id = id;
         }
-        console.log('🔍 提取的ID:', id);
         
         return $(() => import("./chunk-CUOO64VY.js").then(e => {
             console.log('✅ Detail组件加载完成');
             return e.i;
         }), __vite__mapDeps([29, 6, 3, 5, 2, 26, 4, 30, 7, 31, 32, 10, 33, 34, 12, 13, 14]));
     },
-    props: !0,
-    beforeEnter: (to, from, next) => {
-        console.log('🚦 进入Detail路由beforeEnter:');
-        console.log('  to.path:', to.path);
-        console.log('  to.params:', to.params);
-        console.log('  to.fullPath:', to.fullPath);
-        next();
+    props: (route) => {
+        console.log('📤 props函数被调用:');
+        console.log('  路由参数:', route.params);
+        
+        // 如果路由参数中没有id，从hash中提取
+        if (!route.params.id) {
+            const hash = window.location.hash;
+            const match = hash.match(/\/detail\/(\d+)/);
+            if (match && match[1]) {
+                console.log('🔄 从hash补充ID到props:', match[1]);
+                return {
+                    ...route.params,
+                    id: match[1]
+                };
+            }
+        }
+        
+        return route.params;
     }
 }, {
 		path: "/search",

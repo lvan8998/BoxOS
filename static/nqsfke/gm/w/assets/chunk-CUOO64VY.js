@@ -196,6 +196,7 @@ const G = m("Detail", () => {
 		__name: "DetailHeaderView",
 		setup(e) {
 			p();
+			 console.log('开始请求详情，vodId:', o.value);
 			const l = G(),
 				a = u();
 			return (e, t) => {

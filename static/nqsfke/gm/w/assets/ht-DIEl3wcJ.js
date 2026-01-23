@@ -2705,15 +2705,22 @@ window.diagnoseDetailPage = function()  {
     
     // 3. 检查API
     console.log('3. API检查:');
-    console.log('  API地址:', ae.detail);
+    console.log('  API地址:', ae.homeH5);
     
-    // 测试API
+    // 测试API  Ce(ae.initH52, {})
     if (hashMatch && hashMatch[1]) {
         console.log('  测试API调用...');
-        Ce(ae.detail, { id: hashMatch[1] }).then(resp => {
+        Ce(ae.homeH5, { id: hashMatch[1] }).then(resp => {
             console.log('  API响应:', resp);
         });
     }
+
+
+	 Ce(ae.initH52, {}).then(resp => {
+            console.log('  i52API响应:', resp);
+        });
+
+	
 }
 
 // 在控制台执行 diagnoseDetailPage()

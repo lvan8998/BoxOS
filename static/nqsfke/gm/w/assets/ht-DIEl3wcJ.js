@@ -2689,6 +2689,34 @@ window.debugRoute = {
         }
     }
 };
+// 一键诊断
+function diagnoseDetailPage() {
+    console.log('=== 一键诊断详情页问题 ===');
+    
+    // 1. 检查路由
+    console.log('1. 路由检查:');
+    console.log('  当前hash:', window.location.hash);
+    console.log('  当前路由:', Pe.currentRoute.value);
+    
+    // 2. 检查组件
+    console.log('2. 组件检查:');
+    const hashMatch = window.location.hash.match(/\/detail\/(\d+)/);
+    console.log('  从hash提取ID:', hashMatch ? hashMatch[1] : 'null');
+    
+    // 3. 检查API
+    console.log('3. API检查:');
+    console.log('  API地址:', ae.detail);
+    
+    // 测试API
+    if (hashMatch && hashMatch[1]) {
+        console.log('  测试API调用...');
+        Ce(ae.detail, { id: hashMatch[1] }).then(resp => {
+            console.log('  API响应:', resp);
+        });
+    }
+}
+
+// 在控制台执行 diagnoseDetailPage()
 
 export {
 	ae as A, Ue as C, pt as L, At as M, Ye as N, ce as S, wt as T, Et as _, a as __vite_legacy_guard, Re as a, Se as b, ne as c, $ as d, ct as e, re as f, se as g, Rt as h, xe as i, Y as j, te as k, ue as l, de as m, It as n, ft as o, Pe as p, Ce as r, le as s, Qe as u

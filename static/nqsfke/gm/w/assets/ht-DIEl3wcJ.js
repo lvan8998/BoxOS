@@ -766,18 +766,116 @@ const Ae = "arttmpl",
 		},
 		component: () => $(() => import("./chunk-B4lq4qLD.js"), __vite__mapDeps([22, 23, 5, 3, 24, 12, 13, 14, 25, 4, 1, 2, 26, 27, 6, 7, 8, 9, 10, 11, 15, 16, 17, 18, 19, 28, 21])),
 		props: !0
-	},{
+	},// 修改Detail路由配置，添加完整调试
+{
     path: "/detail/:id",
     name: "DetailPage",
     meta: {
         title: "详情"
     },
-    component: () => $(() => import("./chunk-CUOO64VY.js").then(module => {
-        // 模块导出: { i: { default: 组件 }, u: ... }
-        // 我们需要返回组件，即 module.i.default
-        return module.i.default;
-    }), __vite__mapDeps([29, 6, 3, 5, 2, 26, 4, 30, 7, 31, 32, 10, 33, 34, 12, 13, 14])),
-    props: !0
+    component: () => {
+        console.log('=== 组件加载阶段调试 ===');
+        
+        // 阶段1: 检查路由状态
+        console.log('📊 当前路由状态检查:');
+        console.log('  - Pe.currentRoute.value:', Pe.currentRoute.value);
+        console.log('  - 路由参数:', Pe.currentRoute.value.params);
+        console.log('  - 路由路径:', Pe.currentRoute.value.path);
+        
+        // 阶段2: 检查URL
+        console.log('🌐 URL状态检查:');
+        console.log('  - window.location.href:', window.location.href);
+        console.log('  - window.location.hash:', window.location.hash);
+        
+        // 阶段3: 从hash提取ID
+        const hash = window.location.hash;
+        let idFromHash = null;
+        if (hash && hash.includes('/detail/')) {
+            const match = hash.match(/\/detail\/(\d+)/);
+            idFromHash = match ? match[1] : null;
+        }
+        console.log('🔍 从hash提取ID:', idFromHash);
+        
+        // 阶段4: 加载组件
+        console.log('🚀 开始加载组件模块...');
+        return $(() => import("./chunk-CUOO64VY.js").then(module => {
+            console.log('✅ 组件模块加载完成');
+            console.log('📦 模块结构:', module);
+            
+            // 检查模块导出
+            if (module.i && module.i.default) {
+                console.log('🎯 找到组件: module.i.default');
+                const component = module.i.default;
+                
+                // 包装组件的setup函数以调试参数
+                if (component.setup) {
+                    const originalSetup = component.setup;
+                    component.setup = function(props, context) {
+                        console.log('=== 组件setup函数执行 ===');
+                        console.log('📦 组件接收的props:', props);
+                        console.log('🎭 组件接收的context:', context);
+                        console.log('🆔 props.id:', props.id);
+                        console.log('🔧 context.attrs:', context.attrs);
+                        
+                        // 如果没有id，尝试从各种地方获取
+                        if (!props.id) {
+                            console.log('⚠️ props中没有id，尝试补充:');
+                            
+                            // 1. 从路由获取
+                            const routeId = Pe.currentRoute.value.params.id;
+                            console.log('   从路由获取:', routeId);
+                            
+                            // 2. 从hash获取
+                            const hashId = idFromHash;
+                            console.log('   从hash获取:', hashId);
+                            
+                            // 使用第一个有效的id
+                            const finalId = routeId || hashId || props.id;
+                            console.log('   最终使用的ID:', finalId);
+                            
+                            // 如果找到了id，添加到props
+                            if (finalId && !props.id) {
+                                console.log('🔄 补充id到props');
+                                props.id = finalId;
+                            }
+                        }
+                        
+                        // 调用原始setup
+                        const result = originalSetup.call(this, props, context);
+                        console.log('🔧 setup返回结果:', result);
+                        return result;
+                    };
+                } else {
+                    console.log('⚠️ 组件没有setup函数');
+                }
+                
+                return component;
+            } else {
+                console.error('❌ 无法找到组件导出');
+                // 返回一个错误显示组件
+                return {
+                    template: '<div style="padding: 20px; color: red;">组件加载失败: 找不到组件导出</div>',
+                    mounted() {
+                        console.log('❌ 错误组件已挂载');
+                    }
+                };
+            }
+        }), __vite__mapDeps([29, 6, 3, 5, 2, 26, 4, 30, 7, 31, 32, 10, 33, 34, 12, 13, 14]));
+    },
+    // 确保props传递
+    props: (route) => {
+        console.log('=== 路由props函数调用 ===');
+        console.log('📤 原始路由参数:', route.params);
+        console.log('📤 原始查询参数:', route.query);
+        
+        // 确保返回正确的props
+        const props = {
+            id: route.params.id || 'unknown'
+        };
+        
+        console.log('📤 返回的props:', props);
+        return props;
+    }
 }, {
 		path: "/search",
 		name: "SearchPage",

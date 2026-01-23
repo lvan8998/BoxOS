@@ -2690,7 +2690,7 @@ window.debugRoute = {
     }
 };
 // 一键诊断
-function diagnoseDetailPage() {
+window.diagnoseDetailPage = function()  {
     console.log('=== 一键诊断详情页问题 ===');
     
     // 1. 检查路由

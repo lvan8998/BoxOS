@@ -172,7 +172,34 @@
      <script src="main.js"></script>
 <script>
  /************************ 核心配置 ************************/
- 
+ // 一键诊断
+function diagnoseDetailPage() {
+    console.log('=== 一键诊断详情页问题 ===');
+    
+    // 1. 检查路由
+    console.log('1. 路由检查:');
+    console.log('  当前hash:', window.location.hash);
+    console.log('  当前路由:', Pe.currentRoute.value);
+    
+    // 2. 检查组件
+    console.log('2. 组件检查:');
+    const hashMatch = window.location.hash.match(/\/detail\/(\d+)/);
+    console.log('  从hash提取ID:', hashMatch ? hashMatch[1] : 'null');
+    
+    // 3. 检查API
+    console.log('3. API检查:');
+    console.log('  API地址:', ae.detail);
+    
+    // 测试API
+    if (hashMatch && hashMatch[1]) {
+        console.log('  测试API调用...');
+        Ce(ae.detail, { id: hashMatch[1] }).then(resp => {
+            console.log('  API响应:', resp);
+        });
+    }
+}
+
+// 在控制台执行 diagnoseDetailPage()
     </script>
   
   <script type="module">import.meta.url;import("_").catch(()=>1);(async function*(){})().next();window.__vite_is_modern_browser=true</script>

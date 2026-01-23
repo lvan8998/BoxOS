@@ -2707,7 +2707,7 @@ window.diagnoseDetailPage = function()  {
     console.log('3. API检查:');
     console.log('  API地址:', ae.homeH5);
     
-    // 测试API  Ce(ae.initH52, {})
+    // 测试API  Ce(ae.initH52, {}) contentIdcontentId
     if (hashMatch && hashMatch[1]) {
         console.log('  测试API调用...');
         Ce(ae.homeH5, {"showId":2,"pageNo":0,"alreadyShowAdvIds":""}).then(resp => {
@@ -2718,6 +2718,10 @@ window.diagnoseDetailPage = function()  {
 
 	 Ce(ae.initH52, {}).then(resp => {
             console.log('  i52API响应:', resp);
+        });
+
+	 Ce(ae.detail, {"contentId":151501}).then(resp => {
+            console.log('  detail_API响应:', resp);
         });
 
 	

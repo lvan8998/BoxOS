@@ -1076,25 +1076,87 @@ window.addEventListener('hashchange', () => {
         setTimeout(fixInitialRoute, 100);
     }
 });
+// 在路由守卫中添加详细调试
 Pe.beforeEach((to, from, next) => {
-    console.log('路由跳转:', {
-        来源: from.fullPath,
-        目标: to.fullPath,
-        路径: to.path,
-        参数: to.params,
-        查询: to.query,
-        完整URL: window.location.href,
-        Hash: window.location.hash
+    console.log('=== 路由匹配调试 ===');
+    console.log('🛣️ 来源路由:', {
+        path: from.path,
+        fullPath: from.fullPath,
+        params: from.params,
+        query: from.query
     });
-    next();
+    console.log('🎯 目标路由:', {
+        path: to.path,
+        fullPath: to.fullPath,
+        params: to.params,
+        query: to.query
+    });
+    console.log('🔍 匹配到的路由记录:', to.matched);
+    console.log('📊 匹配数量:', to.matched.length);
+    
+    // 检查是否真的匹配到了 /detail/:id
+    const detailMatch = to.matched.find(record => record.path === '/detail/:id');
+    console.log('🎪 是否匹配到/detail/:id:', detailMatch ? '✅' : '❌');
+    
+    // 检查当前URL
+    console.log('🌐 当前URL:', window.location.href);
+    console.log('📍 当前hash:', window.location.hash);
+    
+    // 检查路由解析
+    const hashPath = window.location.hash.substring(1) || '/';
+    const resolved = Pe.resolve(hashPath);
+    console.log('🧪 路由解析结果:', resolved);
+    
+    document.title = "".concat(ee());
+    const o = Se();
+    o.saveScrollPos(), o.setLoading(!0), o.resetFloat(), next();
 });
-console.log('🔄 路由实例Pe已创建');
-console.log('📋 路由数量:', Pe.getRoutes().length);
-console.log('🔍 所有路由:', Pe.getRoutes());
 
-// 检查是否能匹配到 /detail/:id
-const testMatch = Pe.resolve('/detail/64561');
-console.log('🧪 测试路由匹配:', testMatch);
+// 在路由创建后添加全局路由状态检查
+Pe.isReady().then(() => {
+    console.log('=== 路由初始化完成 ===');
+    console.log('📋 所有路由:', Pe.getRoutes().length);
+    console.log('📍 当前路由:', Pe.currentRoute.value);
+    
+    // 测试路由匹配
+    console.log('🧪 测试路由匹配:');
+    const testPaths = ['/detail/64561', '/detail/123', '/'];
+    testPaths.forEach(path => {
+        try {
+            const match = Pe.resolve(path);
+            console.log(`路径 "${path}" ->`, {
+                是否匹配: match.matched.length > 0,
+                匹配的路由: match.matched.map(m => m.path),
+                参数: match.params
+            });
+        } catch (e) {
+            console.log(`路径 "${path}" -> 匹配失败:`, e.message);
+        }
+    });
+});
+
+// 暴露路由工具到控制台
+window.routerDebug = {
+    // 获取当前路由信息
+    getCurrent: () => Pe.currentRoute.value,
+    
+    // 测试路径匹配
+    testPath: (path) => {
+        console.log('🧪 测试路径:', path);
+        const result = Pe.resolve(path);
+        console.log('匹配结果:', result);
+        return result;
+    },
+    
+    // 获取所有路由配置
+    getRoutes: () => Pe.getRoutes(),
+    
+    // 手动导航
+    navigate: (path) => {
+        console.log('🔄 手动导航到:', path);
+        return Pe.push(path);
+    }
+};
 let ze = 0;
 Pe.beforeEach((e, t, a) => {
 	document.title = "".concat(ee());

@@ -2710,7 +2710,7 @@ window.diagnoseDetailPage = function()  {
     // 测试API  Ce(ae.initH52, {})
     if (hashMatch && hashMatch[1]) {
         console.log('  测试API调用...');
-        Ce(ae.homeH5, { id: hashMatch[1] }).then(resp => {
+        Ce(ae.homeH5, {"showId":2,"pageNo":0,"alreadyShowAdvIds":""}).then(resp => {
             console.log('  API响应:', resp);
         });
     }

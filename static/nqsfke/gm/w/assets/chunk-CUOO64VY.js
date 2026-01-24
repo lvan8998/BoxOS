@@ -462,6 +462,8 @@ const G = m("Detail", () => {
 				C = h(),
 				S = R(() => r(() => import("./chunk-DKy14AVN.js"), __vite__mapDeps([46, 2, 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 47]))),
 				q = h();
+			 console.log('Detail page params:', l);
+  console.log('Detail page id:', l.id);
 			return I(async () => {
 				var l, a, u;
 				if (b.setVodId(_.id), v.on("sendVideoDanMu", l => {

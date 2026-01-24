@@ -200,6 +200,90 @@ function diagnoseDetailPage() {
 }
 
 // 在控制台执行 diagnoseDetailPage()
+    // hash-fix.js - 放置在 /BoxOS/static/ 目录下
+(function() {
+  console.log('🔧 哈希模式修复器已加载');
+  
+  // 等待Vue应用加载
+  let checkCount = 0;
+  const maxChecks = 50; // 最多检查5秒
+  
+  const checkApp = setInterval(() => {
+    checkCount++;
+    
+    // 尝试获取Vue应用
+    const app = document.querySelector('#app')?.__vue_app__;
+    if (app) {
+      clearInterval(checkApp);
+      console.log('✅ 找到Vue应用');
+      
+      // 获取路由实例
+      const router = app.config.globalProperties.$router;
+      if (router) {
+        console.log('✅ 找到路由');
+        window.$router = router;
+        
+        // 处理当前哈希值
+        const hash = window.location.hash;
+        if (hash && hash !== '#/') {
+          console.log(`🔄 正在处理哈希值: ${hash}`);
+          const path = hash.replace('#', '');
+          
+          // 延迟跳转以确保组件已注册
+          setTimeout(() => {
+            console.log(`📍 正在导航到: ${path}`);
+            router.push(path);
+          }, 300);
+        }
+      } else {
+        console.log('⚠️ 应用中未找到路由');
+        
+        // 尝试从window对象获取
+        if (window.router) {
+          console.log('✅ 在window对象上找到路由');
+          handleHashNavigation(window.router);
+        }
+      }
+    } else if (checkCount >= maxChecks) {
+      clearInterval(checkApp);
+      console.log('❌ 超时后仍未找到Vue应用');
+    }
+  }, 100);
+  
+  function handleHashNavigation(router) {
+    const hash = window.location.hash;
+    if (hash && hash !== '#/') {
+      const path = hash.replace('#', '');
+      console.log(`📍 正在导航到: ${path}`);
+      
+      // 如果是详情页，确保参数正确
+      if (path.startsWith('/detail/')) {
+        const id = path.split('/').pop();
+        console.log(`🎬 详情页ID: ${id}`);
+      }
+      
+      router.push(path);
+    }
+  }
+  
+  // 监听哈希值变化
+  window.addEventListener('hashchange', function(e) {
+    console.log('🔗 哈希值已更改:', window.location.hash);
+    
+    if (window.$router || window.router) {
+      const router = window.$router || window.router;
+      const newHash = window.location.hash.replace('#', '');
+      const oldHash = e.oldURL.split('#')[1] || '';
+      
+      if (newHash !== oldHash) {
+        console.log(`🔄 哈希值变化导航: ${oldHash} -> ${newHash}`);
+        router.push(newHash);
+      }
+    }
+  });
+  
+  console.log('👀 正在监控哈希值变化...');
+})();
     </script>
   
   <script type="module">import.meta.url;import("_").catch(()=>1);(async function*(){})().next();window.__vite_is_modern_browser=true</script>

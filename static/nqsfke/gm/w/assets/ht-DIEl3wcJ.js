@@ -768,7 +768,7 @@ const Ae = "arttmpl",
 		props: !0
 	},// 修改Detail路由配置，添加完整调试
 {
-    path: "/detail/:id",
+    path: "/BoxOS/static/#/detail/:id",
     name: "DetailPage",
     meta: {
         title: "详情"

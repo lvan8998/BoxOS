@@ -201,88 +201,210 @@ function diagnoseDetailPage() {
 
 // 在控制台执行 diagnoseDetailPage()
     // hash-fix.js - 放置在 /BoxOS/static/ 目录下
+// hash-fix.js
 (function() {
-  console.log('🔧 哈希模式修复器已加载');
+  console.log('🔧 哈希模式修复器已加载 - 服务器版');
   
-  // 等待Vue应用加载
+  const basePath = '/BoxOS/static/';
+  
+  // 等待Vue应用加载，延长等待时间
   let checkCount = 0;
-  const maxChecks = 50; // 最多检查5秒
+  const maxChecks = 100; // 最多检查10秒
   
   const checkApp = setInterval(() => {
     checkCount++;
     
-    // 尝试获取Vue应用
-    const app = document.querySelector('#app')?.__vue_app__;
+    // 尝试多种方式获取Vue应用
+    let app = null;
+    
+    // 方法1：通过DOM元素获取
+    const appElement = document.querySelector('#app');
+    if (appElement) {
+      app = appElement.__vue_app__;
+    }
+    
+    // 方法2：通过window对象获取
+    if (!app && window.app) {
+      app = window.app;
+    }
+    
+    // 方法3：查找所有Vue组件
+    if (!app) {
+      const vueComponents = document.querySelectorAll('[data-v-app]');
+      if (vueComponents.length > 0) {
+        for (const component of vueComponents) {
+          if (component.__vue_app__) {
+            app = component.__vue_app__;
+            break;
+          }
+        }
+      }
+    }
+    
     if (app) {
       clearInterval(checkApp);
-      console.log('✅ 找到Vue应用');
+      console.log('✅ 找到Vue应用:', app);
       
       // 获取路由实例
-      const router = app.config.globalProperties.$router;
+      let router = null;
+      
+      // 方法1：从app配置获取
+      if (app.config && app.config.globalProperties) {
+        router = app.config.globalProperties.$router;
+      }
+      
+      // 方法2：从window对象获取
+      if (!router && window.router) {
+        router = window.router;
+      }
+      
+      // 方法3：从window.$router获取
+      if (!router && window.$router) {
+        router = window.$router;
+      }
+      
       if (router) {
-        console.log('✅ 找到路由');
+        console.log('✅ 找到路由:', router);
         window.$router = router;
         
         // 处理当前哈希值
         const hash = window.location.hash;
-        if (hash && hash !== '#/') {
+        console.log('🔗 初始哈希值:', hash);
+        
+        if (hash && hash !== '#/' && hash !== `#${basePath}`) {
           console.log(`🔄 正在处理哈希值: ${hash}`);
-          const path = hash.replace('#', '');
+          
+          // 移除#号和base路径
+          let path = hash.replace('#', '');
+          if (path.startsWith(basePath)) {
+            path = path.substring(basePath.length);
+          }
+          
+          // 确保不以斜杠开头（如果base路径已包含斜杠）
+          path = path.replace(/^\//, '');
+          
+          console.log(`📍 正在导航到: ${path}`);
           
           // 延迟跳转以确保组件已注册
           setTimeout(() => {
-            console.log(`📍 正在导航到: ${path}`);
-            router.push(path);
-          }, 300);
+            try {
+              router.push(path);
+              console.log('✅ 导航成功');
+            } catch (error) {
+              console.error('❌ 导航失败:', error);
+            }
+          }, 500);
         }
       } else {
-        console.log('⚠️ 应用中未找到路由');
+        console.log('⚠️ 应用中未找到路由，检查window对象...');
+        console.log('window.router:', window.router);
+        console.log('window.$router:', window.$router);
         
-        // 尝试从window对象获取
-        if (window.router) {
-          console.log('✅ 在window对象上找到路由');
-          handleHashNavigation(window.router);
-        }
+        // 尝试直接处理哈希值
+        handleDirectHashNavigation();
       }
     } else if (checkCount >= maxChecks) {
       clearInterval(checkApp);
       console.log('❌ 超时后仍未找到Vue应用');
+      console.log('尝试直接处理路由...');
+      
+      // 尝试直接处理哈希值
+      handleDirectHashNavigation();
     }
   }, 100);
   
-  function handleHashNavigation(router) {
+  function handleDirectHashNavigation() {
+    console.log('🚀 尝试直接处理哈希导航');
+    
     const hash = window.location.hash;
-    if (hash && hash !== '#/') {
+    if (hash && hash !== '#/' && hash !== '#') {
+      console.log(`🔗 直接处理哈希值: ${hash}`);
+      
+      // 移除#号
       const path = hash.replace('#', '');
-      console.log(`📍 正在导航到: ${path}`);
       
-      // 如果是详情页，确保参数正确
-      if (path.startsWith('/detail/')) {
-        const id = path.split('/').pop();
-        console.log(`🎬 详情页ID: ${id}`);
+      // 如果是详情页，模拟加载组件
+      if (path.includes('/detail/')) {
+        console.log('🎬 检测到详情页访问');
+        
+        // 从路径中提取ID
+        const idMatch = path.match(/\/detail\/(\d+)/);
+        if (idMatch && idMatch[1]) {
+          const videoId = idMatch[1];
+          console.log(`🎥 视频ID: ${videoId}`);
+          
+          // 模拟API调用（如果有全局函数）
+          if (window.Ce && window.ae) {
+            console.log('📡 尝试调用详情API...');
+            
+            // 这里可以尝试调用API
+            // 注意：需要确保Ce和ae函数在全局可用
+            try {
+              // 模拟调用
+              setTimeout(() => {
+                console.log('✅ 模拟API调用完成');
+              }, 1000);
+            } catch (error) {
+              console.error('❌ API调用失败:', error);
+            }
+          }
+        }
       }
-      
-      router.push(path);
     }
   }
   
   // 监听哈希值变化
   window.addEventListener('hashchange', function(e) {
     console.log('🔗 哈希值已更改:', window.location.hash);
+    console.log('旧URL:', e.oldURL);
+    console.log('新URL:', e.newURL);
     
     if (window.$router || window.router) {
       const router = window.$router || window.router;
       const newHash = window.location.hash.replace('#', '');
       const oldHash = e.oldURL.split('#')[1] || '';
       
-      if (newHash !== oldHash) {
-        console.log(`🔄 哈希值变化导航: ${oldHash} -> ${newHash}`);
-        router.push(newHash);
+      // 处理base路径
+      let newPath = newHash;
+      if (newPath.startsWith(basePath)) {
+        newPath = newPath.substring(basePath.length);
       }
+      
+      let oldPath = oldHash;
+      if (oldPath.startsWith(basePath)) {
+        oldPath = oldPath.substring(basePath.length);
+      }
+      
+      if (newPath !== oldPath) {
+        console.log(`🔄 哈希值变化导航: ${oldPath} -> ${newPath}`);
+        
+        try {
+          router.push(newPath);
+          console.log('✅ 路由跳转成功');
+        } catch (error) {
+          console.error('❌ 路由跳转失败:', error);
+        }
+      }
+    } else {
+      console.log('⚠️ 没有可用的路由实例，尝试直接处理');
+      handleDirectHashNavigation();
     }
   });
   
-  console.log('👀 正在监控哈希值变化...');
+  // 初始加载时处理一次
+  setTimeout(() => {
+    const hash = window.location.hash;
+    if (hash && hash !== '#/' && hash !== '#') {
+      console.log('🚀 初始加载，处理哈希值:', hash);
+      
+      // 如果没有找到路由，尝试直接处理
+      if (!window.$router && !window.router) {
+        handleDirectHashNavigation();
+      }
+    }
+  }, 2000);
+  
+  console.log('👀 正在监控哈希值变化... basePath:', basePath);
 })();
     </script>
   

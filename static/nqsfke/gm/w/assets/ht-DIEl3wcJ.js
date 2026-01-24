@@ -1120,20 +1120,20 @@ const Ae = "arttmpl",
     }],
 	// 自动获取当前路径作为 base
 // 如果是多层目录，传入你的基础路径
-Pe = V({
-  history:  F('/BoxOS/static/'),  // 你的多层目录路径
-  routes: Me,
-  scrollBehavior: (e, t, a) => a || {
-    top: 0
-  }
-});
-//  Pe = VueRouter.createRouter({
-// 	history: VueRouter.createWebHashHistory(),
-// 	routes: Me,
-// 	scrollBehavior: (e, t, a) => a || {
-// 		top: 0
-// 	}
+// Pe = V({
+//   history: o('/BoxOS/static/'),  // 你的多层目录路径
+//   routes: Me,
+//   scrollBehavior: (e, t, a) => a || {
+//     top: 0
+//   }
 // });
+ Pe = VueRouter.createRouter({
+	history: VueRouter.createWebHashHistory(),
+	routes: Me,
+	scrollBehavior: (e, t, a) => a || {
+		top: 0
+	}
+});
 let hasFixedInitialRoute = false;
 
 const fixInitialRoute = () => {

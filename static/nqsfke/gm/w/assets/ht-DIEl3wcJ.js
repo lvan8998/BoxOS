@@ -769,7 +769,7 @@ const Ae = "arttmpl",
 		props: !0
 	},// 修改Detail路由配置，添加完整调试
 {
-    path: "/BoxOS/static/#/detail/:id",
+    path: "/detail/:id",
     name: "DetailPage",
     meta: {
         title: "详情"
@@ -2671,7 +2671,47 @@ const Bt = {
 				headers: {
 					"Content-Type": "application/json"
 				}
-			}), H(pe, {
+			}); v(() => {
+      console.log('🚀 应用初始化完成');
+      
+      // 获取路由实例
+      const router = Pe;
+      if (router) {
+        console.log('✅ 路由实例已获取');
+        
+        // 修复history对象的createHref方法
+        if (router.history && typeof router.history.createHref !== 'function') {
+          console.log('🔧 修复history.createHref方法');
+          router.history.createHref = function(to) {
+            const base = '/BoxOS/static/';
+            let path = typeof to === 'string' ? to : (to.path || '');
+            
+            // 处理base路径
+            if (path && !path.startsWith(base) && path !== '/') {
+              if (path.startsWith('/')) {
+                path = path.substring(1);
+              }
+              path = base + path;
+            }
+            
+            return '#' + (path || '/');
+          };
+        }
+      }
+      
+      // 处理初始hash
+      if (window.location.hash) {
+        const hash = window.location.hash.replace('#', '');
+        console.log('🔗 初始hash:', hash);
+        
+        // 如果不是以base开头，添加base
+        if (hash && !hash.startsWith('/BoxOS/static/') && hash !== '/') {
+          const correctedHash = '/BoxOS/static' + (hash.startsWith('/') ? hash : '/' + hash);
+          console.log('📍 修正hash:', correctedHash);
+          window.location.hash = correctedHash;
+        }
+      }
+    }); H(pe, {
 				retries: 3,
 				retryDelay: e => 100 * e,
 				retryCondition: e => H.isNetworkError(e) || H.isRetryableError(e),

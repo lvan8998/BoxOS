@@ -1136,7 +1136,7 @@ const Ae = "arttmpl",
 // 	}
 // });
 
-	const Pe = V({
+	 Pe = V({
   history: (() => {
     // 创建自定义的哈希历史记录，考虑base路径
     return {

@@ -651,6 +651,7 @@ async function Ce(e, t = {}, a = !1) {
 }
 //const { createApp } = Vue;
 //const { createRouter, createWebHashHistory } = VueRouter;
+	const basePath = '/BoxOS/static/';
 window.debugCe = Ce;  // 添加到全局
 window.debugAe = ae;  // 添加到全局
 window.debugXe = xe;  // 添加到全局
@@ -1134,7 +1135,7 @@ const Ae = "arttmpl",
 // 		top: 0
 // 	}
 // });
-	const basePath = '/BoxOS/static/';
+
 	const Pe = V({
   history: (() => {
     // 创建自定义的哈希历史记录，考虑base路径

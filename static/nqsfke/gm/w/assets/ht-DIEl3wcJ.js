@@ -1127,12 +1127,48 @@ const Ae = "arttmpl",
 //     top: 0
 //   }
 // });
- Pe = VueRouter.createRouter({
-	history: VueRouter.createWebHashHistory(),
-	routes: Me,
-	scrollBehavior: (e, t, a) => a || {
-		top: 0
-	}
+//  Pe = VueRouter.createRouter({
+// 	history: VueRouter.createWebHashHistory(),
+// 	routes: Me,
+// 	scrollBehavior: (e, t, a) => a || {
+// 		top: 0
+// 	}
+// });
+	const basePath = '/BoxOS/static/';
+	const Pe = V({
+  history: (() => {
+    // 创建自定义的哈希历史记录，考虑base路径
+    return {
+      location: window.location,
+      state: {},
+      push(url, state) {
+        // 确保url包含base路径
+        const fullUrl = url.startsWith(basePath) ? url : basePath + url.replace(/^\//, '');
+        window.location.hash = fullUrl;
+        this.state = state;
+      },
+      replace(url, state) {
+        const fullUrl = url.startsWith(basePath) ? url : basePath + url.replace(/^\//, '');
+        window.location.hash = fullUrl;
+        this.state = state;
+        history.replaceState(state, '', window.location.pathname + window.location.search);
+      },
+      go(delta) {
+        history.go(delta);
+      },
+      listen(handler) {
+        const hashChangeHandler = () => {
+          handler({ location: window.location });
+        };
+        window.addEventListener('hashchange', hashChangeHandler);
+        return () => window.removeEventListener('hashchange', hashChangeHandler);
+      }
+    };
+  })(),
+  routes: Me,
+  scrollBehavior: (e, t, a) => a || {
+    top: 0
+  }
 });
 let hasFixedInitialRoute = false;
 

@@ -10,7 +10,7 @@
     <link rel="icon" type="image/svg+xml" href="/nqsfke/gm/w/icon.png"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 
-    <title></title>
+    <title>404 - 页面未找到</title>
     <style>
   /* 隐藏网页核心内容，验证通过后显示 */
         /* 登录框水平垂直居中核心样式 */
@@ -179,6 +179,56 @@
       color: red;
       font-weight: bold;
     }
+         .notfound-container {
+      text-align: center;
+      max-width: 600px;
+    }
+
+    .notfound-code {
+      font-size: 10rem;
+      font-weight: 700;
+      color: #4a6cf7;
+      line-height: 1;
+      margin-bottom: 1rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .notfound-title {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: #1e293b;
+    }
+
+    .notfound-message {
+      font-size: 1.1rem;
+      color: #64748b;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+
+    .notfound-btn {
+      display: inline-block;
+      padding: 12px 28px;
+      background: #4a6cf7;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+
+    .notfound-btn:hover {
+      background: #3a5be0;
+    }
+
+    @media (max-width: 600px) {
+      .notfound-code {
+        font-size: 6rem;
+      }
+      .notfound-title {
+        font-size: 1.5rem;
+      }
+    }
     </style>
 
   
@@ -193,10 +243,16 @@
 </head>
 <body>
 
-    <div id="notfound" class="page error">
-    <h2>404 - 页面未找到</h2>
-    <p>请使用 <code>index.html 访问。</p>
+ <div id="notfound" class="page error">
+  <div style="text-align:center; padding:40px;">
+    <div style="font-size:6rem; font-weight:bold; color:#4a6cf7; margin-bottom:1rem;">404</div>
+    <h2 style="font-size:1.8rem; margin-bottom:1rem;">页面未找到</h2>
+    <p style="color:#666; margin-bottom:1.5rem;">
+      请使用 <code>联系</code> 管理员。
+    </p>
+    <a href="?login" style="display:inline-block; padding:10px 20px; background:#4a6cf7; color:white; text-decoration:none; border-radius:4px;">去登录</a>
   </div>
+</div>
  <div id="login-box1" style="display: none;text-align: center; margin-top: 0;">
         <h3 style="text-align: center; margin-top: 0;">请输入访问密码</h3>
         <input type="password" id="password-input1" placeholder="请输入密码">

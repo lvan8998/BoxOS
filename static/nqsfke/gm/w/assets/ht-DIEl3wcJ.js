@@ -78,7 +78,6 @@ import "./chunk-Xpcu2h2O.js";
 import {
 	i as K
 } from "./chunk-fUqY2CL3.js";
-//import { createWebHashHistory } from 'vue-router';
 import "./chunk-DQhVL27x.js";
 import "./chunk-cn7T4ICr.js";
 import "./chunk-B9m9zD55.js";
@@ -159,37 +158,17 @@ const Q = {},
 		deviceId: ""
 	};
 
-// function Y() {
-// 	{
-// 		const e = window.location.protocol,
-// 			t = window.location.port;
-// 		return "".concat(e, "//").concat(window.location.hostname).concat(t ? ":" + t : "")
-// 	}
-// }
 function Y() {
-    {
-        const e = window.location.protocol,
-            t = window.location.port,
-            // 获取当前页面的路径，用于计算基路径
-            basePath = window.location.pathname;
-        
-        // 如果是根目录，直接返回域名
-        if (basePath === '/' || basePath === '/index.html') {
-            return "".concat(e, "//").concat(window.location.hostname).concat(t ? ":" + t : "");
-        }
-        
-        // 提取基路径（去掉文件名）
-        const pathSegments = basePath.split('/');
-        pathSegments.pop(); // 移除文件名
-        const baseDir = pathSegments.join('/') || '/';
-        
-        return "".concat(e, "//").concat(window.location.hostname).concat(t ? ":" + t : "").concat(baseDir);
-    }
+	{
+		const e = window.location.protocol,
+			t = window.location.port;
+		return "".concat(e, "//").concat(window.location.hostname).concat(t ? ":" + t : "")
+	}
 }
 
 function ee() {
 	var e;
-	return null != (e = window.__xyz_sn_) ? e : "OA_SST"
+	return null != (e = window.__xyz_sn_) ? e : "视频"
 }
 class te {
 	static aesEncrypt(e, t, a) {
@@ -220,7 +199,7 @@ class te {
 const ae = {
 		appConfig: X.hostDev +"/ht/users/appConfig",
 		initH51: X.hostDev +"/ht/users/initH5_1",
-		initH52: X.hostDev +"/ht/users/initH5_2",
+		initH52: "/ht/users/initH5_2",
 		homeH5: X.hostDev +"/ht/content/homeH5",
 		detail: X.hostDev +"/ht/content/detail",
 		guessContent: X.hostDev +"/ht/content/guessContent",
@@ -649,12 +628,7 @@ async function Ce(e, t = {}, a = !1) {
 		throw new Error("Failed to send request: " + o.message)
 	}
 }
-//const { createApp } = Vue;
-//const { createRouter, createWebHashHistory } = VueRouter;
-	const basePath = '/BoxOS/static/';
-window.debugCe = Ce;  // 添加到全局
-window.debugAe = ae;  // 添加到全局
-window.debugXe = xe;  // 添加到全局
+
 const Ae = "arttmpl",
 	ke = "friendtmpl",
 	Ee = "storetmpl",
@@ -691,6 +665,7 @@ const Ae = "arttmpl",
 				pageNo: d,
 				alreadyShowAdvIds: t.join(",")
 			};//分页
+			const BASE_PATH = '/new/index/';
 			o.value = !0;
 			try {
 				let t = await Ce(ae.homeH5, a);
@@ -752,132 +727,64 @@ const Ae = "arttmpl",
 			requestHome: p
 		}
 	}),
-	Me = [{
+	Me = [
+
+	{
+  path: '/new/index', // 匹配 #/new/index
+  redirect: '/' // 强制跳转到根路径 /
+},{
 		path: "/",
 		name: "Home",
 		meta: {
 			title: "首页"
 		},
-		component: () => $(() => import("./chunk-nKNq4phu.js"), __vite__mapDeps([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]))
+		 component: () => {
+  console.log('📌 开始加载首页组件');
+  return  import("./chunk-nKNq4phu.js").then(res => {
+    console.log('✅ 首页组件加载成功');
+    return res;
+  }).catch(err => {
+    console.error('❌ 组件加载失败', err);
+    throw err;
+  });
+
+
+   // return import("./chunk-nKNq4phu.js")
+   //    .then(res => {
+   //      console.log('✅ 首页组件加载成功：', res);
+   //      return res; // 返回组件，完成加载
+   //    })
+   //    .catch(err => {
+   //      console.error('❌ 首页组件加载失败：', err); // 打印具体错误
+   //      throw err; // 抛出错误，方便定位
+   //    });
+
+
+  }
 	}, {
+		path: "/index2.html",
+		name: "Home2",
+		meta: {
+			title: "首页"
+		},
+		component: () => $(() => import("./chunk-nKNq4phu.js"), __vite__mapDeps([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]))
+	},{
 		path: "/type/:category/:subCategory?",
 		name: "TypePage",
 		meta: {
 			title: "分类"
 		},
-		component: () => $(() => import("./chunk-B4lq4qLD.js"), __vite__mapDeps([22, 23, 5, 3, 24, 12, 13, 14, 25, 4, 1, 2, 26, 27, 6, 7, 8, 9, 10, 11, 15, 16, 17, 18, 19, 28, 21])),
+		component: () =>  import("./chunk-B4lq4qLD.js"),
 		props: !0
-	},// 修改Detail路由配置，添加完整调试
-{
-    path: "/detail/:id",
-    name: "DetailPage",
-    meta: {
-        title: "详情"
-    },
-    component: () => {
-        console.log('=== 组件加载阶段调试 ===');
-        
-        // 阶段1: 检查路由状态
-        console.log('📊 当前路由状态检查:');
-        console.log('  - Pe.currentRoute.value:', Pe.currentRoute.value);
-        console.log('  - 路由参数:', Pe.currentRoute.value.params);
-        console.log('  - 路由路径:', Pe.currentRoute.value.path);
-        
-        // 阶段2: 检查URL
-        console.log('🌐 URL状态检查:');
-        console.log('  - window.location.href:', window.location.href);
-        console.log('  - window.location.hash:', window.location.hash);
-        
-        // 阶段3: 从hash提取ID
-        const hash = window.location.hash;
-        let idFromHash = null;
-        if (hash && hash.includes('/detail/')) {
-            const match = hash.match(/\/detail\/(\d+)/);
-            idFromHash = match ? match[1] : null;
-        }
-        console.log('🔍 从hash提取ID:', idFromHash);
-        
-        // 阶段4: 加载组件
-        console.log('🚀 开始加载组件模块...');
-        return $(() => import("./chunk-CUOO64VY.js").then(module => {
-            console.log('✅ 组件模块加载完成');
-            console.log('📦 模块结构:', module);
-            
-            // 检查模块导出
-            if (module.i && module.i.default) {
-                console.log('🎯 找到组件: module.i.default');
-                const component = module.i.default;
-                
-                // 包装组件的setup函数以调试参数
-                if (component.setup) {
-                    const originalSetup = component.setup;
-                    component.setup = function(props, context) {
-                        console.log('=== 组件setup函数执行 ===');
-                        console.log('📦 组件接收的props:', props);
-                        console.log('🎭 组件接收的context:', context);
-                        console.log('🆔 props.id:', props.id);
-                        console.log('🔧 context.attrs:', context.attrs);
-                        
-                        // 如果没有id，尝试从各种地方获取
-                        if (!props.id) {
-                            console.log('⚠️ props中没有id，尝试补充:');
-                            
-                            // 1. 从路由获取
-                            const routeId = Pe.currentRoute.value.params.id;
-                            console.log('   从路由获取:', routeId);
-                            
-                            // 2. 从hash获取
-                            const hashId = idFromHash;
-                            console.log('   从hash获取:', hashId);
-                            
-                            // 使用第一个有效的id
-                            const finalId = routeId || hashId || props.id;
-                            console.log('   最终使用的ID:', finalId);
-                            
-                            // 如果找到了id，添加到props
-                            if (finalId && !props.id) {
-                                console.log('🔄 补充id到props');
-                                props.id = finalId;
-                            }
-                        }
-                        
-                        // 调用原始setup
-                        const result = originalSetup.call(this, props, context);
-                        console.log('🔧 setup返回结果:', result);
-                        return result;
-                    };
-                } else {
-                    console.log('⚠️ 组件没有setup函数');
-                }
-                
-                return component;
-            } else {
-                console.error('❌ 无法找到组件导出');
-                // 返回一个错误显示组件
-                return {
-                    template: '<div style="padding: 20px; color: red;">组件加载失败: 找不到组件导出</div>',
-                    mounted() {
-                        console.log('❌ 错误组件已挂载');
-                    }
-                };
-            }
-        }), __vite__mapDeps([29, 6, 3, 5, 2, 26, 4, 30, 7, 31, 32, 10, 33, 34, 12, 13, 14]));
-    },
-    // 确保props传递
-    props: (route) => {
-        console.log('=== 路由props函数调用 ===');
-        console.log('📤 原始路由参数:', route.params);
-        console.log('📤 原始查询参数:', route.query);
-        
-        // 确保返回正确的props
-        const props = {
-            id: route.params.id || 'unknown'
-        };
-        
-        console.log('📤 返回的props:', props);
-        return props;
-    }
-}, {
+	}, {
+		path: "/detail/:id",
+		name: "DetailPage",
+		meta: {
+			title: "详情"
+		},
+		component: () => $(() => import("./chunk-CUOO64VY.js").then(e => e.i), __vite__mapDeps([29, 6, 3, 5, 2, 26, 4, 30, 7, 31, 32, 10, 33, 34, 12, 13, 14])),
+		props: !0
+	}, {
 		path: "/search",
 		name: "SearchPage",
 		meta: {
@@ -1099,201 +1006,87 @@ const Ae = "arttmpl",
 			hideAd: !0
 		},
 		component: () => $(() => import("./chunk-WsJCYEJB.js"), __vite__mapDeps([91, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21]))
-	},
-		  {
-        path: "/:path(.*)*",
-        name: "NotFound",
-        component: () => {
-            console.log('❌ 进入404页面，当前路径:', window.location.hash);
-            console.log('   路由匹配失败，可能的原因:');
-            console.log('   1. 路径不匹配任何路由');
-            console.log('   2. 路由配置错误');
-            console.log('   3. 组件加载失败');
-            
-            // 创建一个简单的404组件
-            return {
-                template: '<div style="padding: 20px; color: red;">404 - 页面未找到<br>当前路径: ' + window.location.hash + '</div>',
-                mounted() {
-                    console.log('404组件已挂载');
-                }
-            };
-        }
-    }],
-	// 自动获取当前路径作为 base
-// 如果是多层目录，传入你的基础路径
-// Pe = V({
-//   history: o('/BoxOS/static/'),  // 你的多层目录路径
-//   routes: Me,
-//   scrollBehavior: (e, t, a) => a || {
-//     top: 0
+	}],
+//  const BASE = '/new/index/',
+//  hashHistory = {
+//    base: BASE,
+//   location: {
+//     get path() {
+//       // 核心修正2：提取hash后纯净路径，去掉BASE前缀，空则返回/
+//       const hash = window.location.hash.slice(1) || '';
+//       const purePath = hash.replace(new RegExp(`^${BASE.replace(/\//g, '\\/')}`), '') || '/';
+//       return purePath;
+//     }
+//   },
+//   get path() {
+//     return this.location.path;
+//   },
+//   push: (path) => {
+//     // 核心修正3：hash只拼接纯净路径，不叠加BASE，保证格式为 #/xxx/xxx
+//     const purePath = path.replace(new RegExp(`^${BASE.replace(/\//g, '\\/')}`), '') || '/';
+//     window.location.hash = `#${purePath}`;
+//   },
+//   replace: (path) => {
+//     const purePath = path.replace(new RegExp(`^${BASE.replace(/\//g, '\\/')}`), '') || '/';
+//     window.location.hash = `#${purePath}`;
+//   },
+//   listen: () => {},
+//   destroy: () => {},
+//   createHref: (path) => {
+//     const purePath = path.replace(new RegExp(`^${BASE.replace(/\//g, '\\/')}`), '') || '/';
+//     return `#${purePath}`;
 //   }
-// });
-//  Pe = VueRouter.createRouter({
-// 	history: VueRouter.createWebHashHistory(),
-// 	routes: Me,
-// 	scrollBehavior: (e, t, a) => a || {
-// 		top: 0
-// 	}
-// });
-
-	 Pe = V({
-  history: (() => {
-    // 创建自定义的哈希历史记录，考虑base路径
-    return {
-      location: window.location,
-      state: {},
-      push(url, state) {
-        // 确保url包含base路径
-        const fullUrl = url.startsWith(basePath) ? url : basePath + url.replace(/^\//, '');
-        window.location.hash = fullUrl;
-        this.state = state;
-      },
-      replace(url, state) {
-        const fullUrl = url.startsWith(basePath) ? url : basePath + url.replace(/^\//, '');
-        window.location.hash = fullUrl;
-        this.state = state;
-        history.replaceState(state, '', window.location.pathname + window.location.search);
-      },
-      go(delta) {
-        history.go(delta);
-      },
-      listen(handler) {
-        const hashChangeHandler = () => {
-          handler({ location: window.location });
-        };
-        window.addEventListener('hashchange', hashChangeHandler);
-        return () => window.removeEventListener('hashchange', hashChangeHandler);
-      }
-    };
-  })(),
+// },
+	Pe = V({
+		history: {
+  base: '/new/index/',
+  location: { get path() { return '/' } },
+  get path() { return '/' },
+  push: function(path) {
+    // 核心：path 为空/无/ 时补 /，保证 #/xxx 格式
+    const finalPath = path.startsWith('/') ? path : `/${path}`;
+    window.location.hash = `#${finalPath}`;
+  },
+  replace: function(path) {
+    const finalPath = path.startsWith('/') ? path : `/${path}`;
+    window.location.hash = `#${finalPath}`;
+  },
+  createHref: function(path) {
+    const finalPath = path.startsWith('/') ? path : `/${path}`;
+    return `#${finalPath}`;
+  },
+  listen: () => {},
+  destroy: () => {},
+},
   routes: Me,
-  scrollBehavior: (e, t, a) => a || {
-    top: 0
-  }
-});
-let hasFixedInitialRoute = false;
-
-const fixInitialRoute = () => {
-    if (hasFixedInitialRoute) return;
-    
-    const hash = window.location.hash;
-    if (hash && hash.startsWith('#/')) {
-        const path = hash.substring(1);
-        console.log('🔍 检查初始路由:');
-        console.log('  当前hash:', hash);
-        console.log('  当前路由路径:', Pe.currentRoute.value.path);
-        console.log('  目标路径:', path);
-        
-        if (path !== '/' && Pe.currentRoute.value.path === '/') {
-            console.log('🔄 执行初始路由修复:', path);
-            hasFixedInitialRoute = true;
-            
-            // 使用 replace 而不是 push，避免历史记录
-            Pe.replace(path).catch(err => {
-                console.error('路由修复失败:', err);
-                // 即使失败也不要无限重试
-            });
-        }
-    }
-};
-
-// 等待路由准备就绪后执行修复
-Pe.isReady().then(() => {
-    console.log('✅ 路由准备就绪');
-    fixInitialRoute();
+  scrollBehavior: (e, t, a) => a || { top: 0 }
 });
 
-// 同时监听hash变化，但只处理初始情况
-let isInitialLoad = true;
-window.addEventListener('hashchange', () => {
-    if (isInitialLoad) {
-        isInitialLoad = false;
-        setTimeout(fixInitialRoute, 100);
-    }
-});
-// 在路由守卫中添加详细调试
-Pe.beforeEach((to, from, next) => {
-    console.log('=== 路由匹配调试 ===');
-    console.log('🛣️ 来源路由:', {
-        path: from.path,
-        fullPath: from.fullPath,
-        params: from.params,
-        query: from.query
-    });
-    console.log('🎯 目标路由:', {
-        path: to.path,
-        fullPath: to.fullPath,
-        params: to.params,
-        query: to.query
-    });
-    console.log('🔍 匹配到的路由记录:', to.matched);
-    console.log('📊 匹配数量:', to.matched.length);
-    
-    // 检查是否真的匹配到了 /detail/:id
-    const detailMatch = to.matched.find(record => record.path === '/detail/:id');
-    console.log('🎪 是否匹配到/detail/:id:', detailMatch ? '✅' : '❌');
-    
-    // 检查当前URL
-    console.log('🌐 当前URL:', window.location.href);
-    console.log('📍 当前hash:', window.location.hash);
-    
-    // 检查路由解析
-    const hashPath = window.location.hash.substring(1) || '/';
-    const resolved = Pe.resolve(hashPath);
-    console.log('🧪 路由解析结果:', resolved);
-    
-    document.title = "".concat(ee());
-    const o = Se();
-    o.saveScrollPos(), o.setLoading(!0), o.resetFloat(), next();
+// ========== 核心修改：绕开 Pe.history，用原生 hash 触发匹配 ==========
+// 1. 初始化hash为#（避免空hash）
+if (!window.location.hash) {
+  window.location.hash = '#';
+}
+
+Pe.push('/'); 
+
+// 3. 手动触发hashchange，唤醒路由解析（关键！）
+window.dispatchEvent(new HashChangeEvent('hashchange'));
+
+// ========== 路由钩子（保留） ==========
+Pe.afterEach((to, from) => {
+  console.log('✅ 路由匹配结果：', to.path); 
 });
 
-// 在路由创建后添加全局路由状态检查
-Pe.isReady().then(() => {
-    console.log('=== 路由初始化完成 ===');
-    console.log('📋 所有路由:', Pe.getRoutes().length);
-    console.log('📍 当前路由:', Pe.currentRoute.value);
-    
-    // 测试路由匹配
-    console.log('🧪 测试路由匹配:');
-    const testPaths = ['/detail/64561', '/detail/123', '/'];
-    testPaths.forEach(path => {
-        try {
-            const match = Pe.resolve(path);
-            console.log(`路径 "${path}" ->`, {
-                是否匹配: match.matched.length > 0,
-                匹配的路由: match.matched.map(m => m.path),
-                参数: match.params
-            });
-        } catch (e) {
-            console.log(`路径 "${path}" -> 匹配失败:`, e.message);
-        }
-    });
-});
+// 2. 提取原生hash的纯净路径（不用 Pe.history）
 
-// 暴露路由工具到控制台
-window.routerDebug = {
-    // 获取当前路由信息
-    getCurrent: () => Pe.currentRoute.value,
-    
-    // 测试路径匹配
-    testPath: (path) => {
-        console.log('🧪 测试路径:', path);
-        const result = Pe.resolve(path);
-        console.log('匹配结果:', result);
-        return result;
-    },
-    
-    // 获取所有路由配置
-    getRoutes: () => Pe.getRoutes(),
-    
-    // 手动导航
-    navigate: (path) => {
-        console.log('🔄 手动导航到:', path);
-        return Pe.push(path);
-    }
-};
 let ze = 0;
 Pe.beforeEach((e, t, a) => {
+
+	 //  if (!window.location.hash.includes(window.history.base)) {
+  //   window.location.hash = window.history.base + to.path
+  // }
+  //   next();//新
 	document.title = "".concat(ee());
 	const o = Se();
 	o.saveScrollPos(), o.setLoading(!0), o.resetFloat(), a()
@@ -1316,20 +1109,12 @@ Pe.afterEach((e, t) => {
 		n.setLoading(!1)
 	}, 100)
 });
-// const Re = (e, t) => {
-// 		Pe.push({
-// 			path: e,
-// 			query: t
-// 		})
-// 	},
 const Re = (e, t) => {
-    // 确保路径以 / 开头，但不是以 # 开头
-    let path = e.startsWith('/') ? e : '/' + e;
-    Pe.push({
-        path: path,
-        query: t
-    })
-},
+		Pe.push({
+			path: e,
+			query: t
+		})
+	},
 	Ve = {
 		[Ae]: "/chiGua",
 		[ke]: "/tongCheng",
@@ -1343,9 +1128,11 @@ const Re = (e, t) => {
 	Oe = () => Pe.currentRoute.value.path,
 	Fe = () => !0 !== Pe.currentRoute.value.meta.hideAd,
 	Ze = () => {
-		const e = Pe.currentRoute.value.path;
-		return "" === e || "/" === e || "/BoxOS/static" === e
-	};
+  const e = Pe.currentRoute.value.path;
+  // 只判定 空、/、/home 为首页，其他路径返回 false（不拦截）
+  return "" === e || "/" === e || "/home" === e;
+};
+ //console.log(Ze())
 if ("undefined" != typeof window) {
 	let e = function() {
 		var e = document.body,
@@ -2039,7 +1826,7 @@ const Ge = j("Global", () => ({
 
 				//const t = a.tabList[e];
 					//console.log(666);
-				console.log(t.contentId);
+				//console.log(t);
 				let o = Pe.currentRoute.value.path;
 				
 				o.startsWith("/") && (o = o.substring(1));
@@ -2179,16 +1966,18 @@ const Ge = j("Global", () => ({
 const filteredTabList = filterTabList(a.tabList);
 
 // 3. 从过滤后的数组中取值（替换原来的 const o = a.tabList[e]）
-const o = filteredTabList[e];
+const o = filteredTabList[e],
+       base = '/new/index';
 					//console.log('678');
-					//console.log(o);
+					//console.log(o.contentId);
 
 					if (5 === o.contentType) Re("/type/".concat(o.contentId));
 					else if (3 === o.contentType)
 						if (o.img in Ve) Re(Ve[o.img]);
 						else {
 							let e = null != (t = o.jumpScheme) ? t : "";
-							e.startsWith("/") ? Re(e) : Ue.openBlankUrl(e)
+							e.startsWith("/") ? Re(e) : Ue.openBlankUrl(e);
+							
 						}
 				}(t),
 				class: y(["relative cursor-pointer items-center text-center text-[15px] whitespace-nowrap transition-all duration-300", h(t), p(t) ? "font-bold text-white" : "text-[#ababab]"])
@@ -2671,47 +2460,7 @@ const Bt = {
 				headers: {
 					"Content-Type": "application/json"
 				}
-			}); v(() => {
-      console.log('🚀 应用初始化完成');
-      
-      // 获取路由实例
-      const router = Pe;
-      if (router) {
-        console.log('✅ 路由实例已获取');
-        
-        // 修复history对象的createHref方法
-        if (router.history && typeof router.history.createHref !== 'function') {
-          console.log('🔧 修复history.createHref方法');
-          router.history.createHref = function(to) {
-            const base = '/BoxOS/static/';
-            let path = typeof to === 'string' ? to : (to.path || '');
-            
-            // 处理base路径
-            if (path && !path.startsWith(base) && path !== '/') {
-              if (path.startsWith('/')) {
-                path = path.substring(1);
-              }
-              path = base + path;
-            }
-            
-            return '#' + (path || '/');
-          };
-        }
-      }
-      
-      // 处理初始hash
-      if (window.location.hash) {
-        const hash = window.location.hash.replace('#', '');
-        console.log('🔗 初始hash:', hash);
-        
-        // 如果不是以base开头，添加base
-        if (hash && !hash.startsWith('/BoxOS/static/') && hash !== '/') {
-          const correctedHash = '/BoxOS/static' + (hash.startsWith('/') ? hash : '/' + hash);
-          console.log('📍 修正hash:', correctedHash);
-          window.location.hash = correctedHash;
-        }
-      }
-    }); H(pe, {
+			}), H(pe, {
 				retries: 3,
 				retryDelay: e => 100 * e,
 				retryCondition: e => H.isNetworkError(e) || H.isRetryableError(e),
@@ -2739,73 +2488,6 @@ const Bt = {
 	])),
 	Yt = R();
 Xt.use(G), Xt.use(N), Xt.use(K), Xt.use(Yt).use(Pe).mount("#app");
-// 确保所有地方都使用正确的模式
-console.log('🎯 路由模式检查:');
-console.log('  当前URL:', window.location.href);
-console.log('  当前hash:', window.location.hash);
-console.log('  hash去掉#:', window.location.hash.substring(1));
-console.log('  路由当前路径:', Pe.currentRoute.value.path);
-
-// 添加全局调试
-window.debugRoute = {
-    current: () => Pe.currentRoute.value,
-    hash: () => window.location.hash,
-    history: () => Pe.history,
-    test: () => {
-        console.log('=== 路由状态调试 ===');
-        console.log('当前hash:', window.location.hash);
-        console.log('当前路由:', Pe.currentRoute.value);
-        console.log('路由实例:', Pe);
-        
-        const hash = window.location.hash;
-        if (hash && hash.startsWith('#/')) {
-            const path = hash.substring(1);
-            console.log('解析路径:', path);
-            const resolved = Pe.resolve(path);
-            console.log('路由解析结果:', resolved);
-        }
-    }
-};
-// 一键诊断
-window.diagnoseDetailPage = function()  {
-    console.log('=== 一键诊断详情页问题 ===');
-    
-    // 1. 检查路由
-    console.log('1. 路由检查:');
-    console.log('  当前hash:', window.location.hash);
-    console.log('  当前路由:', Pe.currentRoute.value);
-    
-    // 2. 检查组件
-    console.log('2. 组件检查:');
-    const hashMatch = window.location.hash.match(/\/detail\/(\d+)/);
-    console.log('  从hash提取ID:', hashMatch ? hashMatch[1] : 'null');
-    
-    // 3. 检查API
-    console.log('3. API检查:');
-    console.log('  API地址:', ae.homeH5);
-    
-    // 测试API  Ce(ae.initH52, {}) contentIdcontentId
-    if (hashMatch && hashMatch[1]) {
-        console.log('  测试API调用...');
-        Ce(ae.homeH5, {"showId":2,"pageNo":0,"alreadyShowAdvIds":""}).then(resp => {
-            console.log('  API响应:', resp);
-        });
-    }
-
-
-	 Ce(ae.initH52, {}).then(resp => {
-            console.log('  i52API响应:', resp);
-        });
-
-	 Ce(ae.detail, {"contentId":151501}).then(resp => {
-            console.log('  detail_API响应:', resp);
-        });
-
-	
-}
-
-// 在控制台执行 diagnoseDetailPage()
-
 export {
 	ae as A, Ue as C, pt as L, At as M, Ye as N, ce as S, wt as T, Et as _, a as __vite_legacy_guard, Re as a, Se as b, ne as c, $ as d, ct as e, re as f, se as g, Rt as h, xe as i, Y as j, te as k, ue as l, de as m, It as n, ft as o, Pe as p, Ce as r, le as s, Qe as u
 };

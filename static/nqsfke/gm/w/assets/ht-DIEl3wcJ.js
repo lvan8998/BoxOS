@@ -730,7 +730,7 @@ const Ae = "arttmpl",
 	Me = [
 
 	{
-  path: '/new/index', // 匹配 #/new/index
+  path: '/BoxOS/static', // 匹配 #/new/index
   redirect: '/' // 强制跳转到根路径 /
 },{
 		path: "/",
@@ -1039,7 +1039,7 @@ const Ae = "arttmpl",
 // },
 	Pe = V({
 		history: {
-  base: '/new/index/',
+  base: '/BoxOS/static/',
   location: { get path() { return '/' } },
   get path() { return '/' },
   push: function(path) {

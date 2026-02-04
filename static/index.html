@@ -321,6 +321,47 @@
     }
   }
 
+function generateRandomBase64(byteLength) {
+    // 1. 创建一个指定长度的随机字节数组
+    const array = new Uint8Array(byteLength);
+    crypto.getRandomValues(array);
+    
+    // 2. 将字节数组转换为二进制字符串
+    let binary = '';
+    array.forEach(byte => {
+        binary += String.fromCharCode(byte);
+    });
+    
+    // 3. 使用 btoa 进行 Base64 编码
+    return btoa(binary);
+}
+      
+      document.getElementById('checkBtn').addEventListener('click', function() {
+    // 这里执行登录请求...
+    // 假设登录成功
+     console.log('id66');
+
+           const randomStr = generateRandomBase64(80);
+                    //console.log(randomStr);
+                    //console.log(window.location.href);
+                    const currentUrl = new URL(window.location.href);
+                    
+    // 检查当前是否是 ?login 状态，如果是，则替换
+    if (currentUrl.searchParams.has('home') && !currentUrl.searchParams.get('home')) {
+        // 设置值
+        currentUrl.searchParams.set('home', randomStr);
+        
+        // 执行替换
+        window.history.replaceState({ path: currentUrl.href }, '', currentUrl.href);
+        
+       // console.log('URL 已更新为:', currentUrl.href);
+        // 此时浏览器地址栏变了，但页面没刷新
+    }
+
+
+          
+    //onLoginSuccess();
+});      
   // 页面加载时执行一次
   initCustomRouter();
 

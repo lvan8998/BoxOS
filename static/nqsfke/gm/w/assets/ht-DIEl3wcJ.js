@@ -2455,11 +2455,11 @@ const Bt = {
 		__name: "App",
 		setup(e) {
 			Ge().initDeviceInfo(), pe = Z.create({
-				baseURL:  "localhost"//Y(),
+				baseURL:  "localhost",  
 				timeout: 1e4,
 				headers: {
 					"Content-Type": "application/json"
-				}
+				} //Y()
 			}), H(pe, {
 				retries: 3,
 				retryDelay: e => 100 * e,

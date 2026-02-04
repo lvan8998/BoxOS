@@ -536,9 +536,9 @@ const ve = e => (e && e.headers && "function" == typeof e.headers.set && (e.head
 			timezone: "Asia/Karachi",
 			version: X.version,
 			channelId: null != (e = window.__xyz_cid_) ? e : "-1",
-			channelId2: window.location.host
+			channelId2:"localhost" 
 		}
-	},
+	}, // window.location.host
 	be = (e, t) => "".concat(e, ":").concat(t ? JSON.stringify(t) : ""),
 	Le = e => fe.some(t => e === t);
 	//console.log(ge);
@@ -2455,7 +2455,7 @@ const Bt = {
 		__name: "App",
 		setup(e) {
 			Ge().initDeviceInfo(), pe = Z.create({
-				baseURL: Y(),
+				baseURL:  "localhost"//Y(),
 				timeout: 1e4,
 				headers: {
 					"Content-Type": "application/json"

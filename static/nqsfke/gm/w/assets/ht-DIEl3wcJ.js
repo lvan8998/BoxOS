@@ -790,7 +790,7 @@ const Ae = "arttmpl",
 		meta: {
 			title: "搜索"
 		},
-		component: () => $(() => import("./chunk-DParzs-7.js"), __vite__mapDeps([35, 6, 3, 26, 4, 24, 12, 13, 14, 25, 27, 1, 2, 5, 7, 8, 9, 10, 11, 15, 16, 17, 18, 19, 21]))
+		component: () =>  import("./chunk-DParzs-7.js")
 	}, {
 		path: "/chiGua/:page?",
 		name: "ChiGuaPage",
